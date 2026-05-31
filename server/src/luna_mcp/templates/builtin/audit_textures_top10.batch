@@ -1,0 +1,5 @@
+# desc: top texture memory consumers + render diagnose
+# version: 1
+audit_textures
+get_render_stats
+diagnose_rendering

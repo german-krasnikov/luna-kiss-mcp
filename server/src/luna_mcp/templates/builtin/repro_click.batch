@@ -1,0 +1,7 @@
+# params: path,x,y
+# desc: snapshot → click → console diff → restore
+# version: 1
+snapshot_state name=pre path={{path}}
+simulate_click x={{x|100}} y={{y|100}}
+get_console count=15
+restore_state name=pre

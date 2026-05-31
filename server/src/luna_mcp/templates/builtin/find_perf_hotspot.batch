@@ -1,0 +1,6 @@
+# desc: full perf triage (FPS, draw calls, bottlenecks)
+# version: 1
+get_performance_metrics
+get_render_stats
+diagnose_bottlenecks
+diagnose_rendering

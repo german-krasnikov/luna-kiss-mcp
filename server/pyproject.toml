@@ -1,0 +1,56 @@
+[project]
+name = "luna-mcp"
+version = "0.1.0"
+description = "MCP server for debugging Luna builds in Chrome via CDP"
+license = "MIT"
+readme = "../README.md"
+authors = [{name = "German Krasnikov", email = "german.krasnikov@gmail.com"}]
+requires-python = ">=3.10"
+keywords = ["luna", "mcp", "cdp", "chrome", "devtools", "unity", "debugging", "playable"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Debuggers",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "websockets>=12.0",
+    "aiohttp>=3.9",
+    "Pillow>=9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/german-krasnikov/luna-kiss-mcp"
+Repository = "https://github.com/german-krasnikov/luna-kiss-mcp"
+Issues = "https://github.com/german-krasnikov/luna-kiss-mcp/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.scripts]
+luna-mcp = "luna_mcp.server:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+python_files = "test_*.py"
+markers = ["live: requires running Chrome with Luna build"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/luna_mcp"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

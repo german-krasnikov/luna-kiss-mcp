@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "modules": [
+    {"id": "particle-system", "exports": ["pc.ParticleSystemSystem", "pc.ParticleSystemComponent"], "size_kb": 107, "category": "rendering"},
+    {"id": "physics3d", "exports": ["pc.RigidbodyComponent", "pc.ColliderComponent", "pc.BoxColliderComponent", "pc.CapsuleColliderComponent", "pc.SphereColliderComponent", "pc.MeshColliderComponent", "pc.WheelColliderComponent", "pc.CharacterControllerComponent", "pc.JointComponent"], "size_kb": 80, "category": "physics"},
+    {"id": "ui-2d", "exports": ["pc.ElementComponent", "pc.LayoutGroupComponent"], "size_kb": 45, "category": "ui"},
+    {"id": "audio", "exports": ["pc.SoundComponent"], "size_kb": 30, "category": "audio"},
+    {"id": "animation", "exports": ["pc.AnimComponent", "pc.AnimStateGraph"], "size_kb": 65, "category": "animation"},
+    {"id": "xr", "exports": ["pc.XrManager", "pc.XrInput"], "size_kb": 55, "category": "xr"},
+    {"id": "gsplat", "exports": ["pc.GSplatComponent", "pc.GSplatData"], "size_kb": 72, "category": "rendering"},
+    {"id": "spine", "exports": ["pc.SpineComponent"], "size_kb": 120, "category": "animation"},
+    {"id": "font", "exports": ["pc.Font", "pc.BitmapFont"], "size_kb": 18, "category": "ui"},
+    {"id": "lightmapper", "exports": ["pc.Lightmapper"], "size_kb": 38, "category": "rendering"}
+  ]
+}

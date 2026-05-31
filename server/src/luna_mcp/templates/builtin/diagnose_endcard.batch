@@ -1,0 +1,7 @@
+# params: path
+# desc: trace end-card show conditions and animator state
+# version: 1
+find_objects query=EndCard
+get_object_detail path={{path}}
+get_animator_state path={{path}}
+watch_property path={{path}} component=GameObject prop=activeSelf interval_ms=500 count=10

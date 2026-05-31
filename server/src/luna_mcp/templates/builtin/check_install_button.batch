@@ -1,0 +1,6 @@
+# params: path
+# desc: verify install button is visible, wired, and console is clean
+# version: 1
+get_object_detail path={{path}}
+diagnose_object path={{path}}
+get_console count=20 level=Error
