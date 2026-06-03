@@ -42,11 +42,16 @@ def wire_features(*, call_fn, sampling, ping_fn, lessons_store,
     # Physics Detective
     from .physics_detective.diagnose_flow import PhysicsDiagnostic
     from .physics_detective.seeds import seed_physics_lessons
+    from .lessons.luna_issue_seeds import seed_luna_issues
     if lessons_store is not None:
         try:
             seed_physics_lessons(lessons_store)
         except Exception:
             logger.debug("seed_physics_lessons failed", exc_info=True)
+        try:
+            seed_luna_issues(lessons_store)
+        except Exception:
+            logger.debug("seed_luna_issues failed", exc_info=True)
     _physics_mod._diagnostic = PhysicsDiagnostic(call_fn, sampling, lessons_store)
     _physics_mod._compare_states_fn = all_tools.get(
         "compare_animation_states", (None,))[0]

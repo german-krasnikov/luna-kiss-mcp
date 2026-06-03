@@ -1,5 +1,5 @@
 // Luna MCP helpers. Injected via CDP. All output TEXT (no JSON).
-// Version 1.3.1
+// Version 1.6.1
 (function() {
     if (window.__luna_mcp) return;
 
@@ -520,7 +520,7 @@
     }
 
     window.__luna_mcp = {
-        version: '1.2.0',
+        version: '1.6.1',
 
         ping: function() {
             var scene = getScene();
@@ -1255,6 +1255,26 @@
             return 'logged to console: ' + path + '/' + componentType;
         },
 
+        enumerateDebugger: function() {
+            if (typeof pc === 'undefined' || !pc.Debugger) return 'error: no debugger';
+            try {
+                var lines = [];
+                var ns = Object.keys(pc.Debugger);
+                for (var i = 0; i < ns.length; i++) {
+                    var n = ns[i];
+                    var obj = pc.Debugger[n];
+                    if (!obj || typeof obj !== 'object') continue;
+                    var fns = Object.keys(obj).filter(function(k) { return typeof obj[k] === 'function'; });
+                    if (fns.length) lines.push(n + ': ' + fns.join(', '));
+                }
+                return lines.length ? lines.join('\n') : '(no namespaces)';
+            } catch(e) { return 'error: ' + e.message; }
+        },
+
+        invokeDebugger: function(type, name, paramsJson) {
+            return window.__luna_mcp.sendDebuggerMessage(type, name, paramsJson);
+        },
+
         sendDebuggerMessage: function(type, name, paramsJson) {
             if (typeof pc === 'undefined' || !pc.Debugger) return 'error: no debugger';
             var params;
@@ -1554,6 +1574,35 @@
                     }
                 } catch(e) {}
                 try {
+                    var _app2 = pc.Application.getApplication();
+                    var _counters = _app2 && _app2.counters;
+                    var _prev = _counters && _counters.previous;
+                    if (_prev) {
+                        var _times = _prev.times;
+                        var _totalFrame = (_prev.frame || 0) * 1000;
+                        var readTime = function(t, key) {
+                            if (!t) return 0;
+                            if (typeof Map !== 'undefined' && t instanceof Map) return (t.get(key) || 0) * 1000;
+                            if (t[key] !== undefined) return (t[key] || 0) * 1000;
+                            var syms = Object.getOwnPropertySymbols ? Object.getOwnPropertySymbols(t) : [];
+                            for (var _si = 0; _si < syms.length; _si++) {
+                                if (syms[_si].description === key) return (t[syms[_si]] || 0) * 1000;
+                            }
+                            return 0;
+                        };
+                        var _bdKeys = ['render','scripts','animations','animators','physics2d','physics'];
+                        var _bdLines = ['frameBreakdown (last frame, ' + (_totalFrame || 0).toFixed(2) + 'ms):'];
+                        for (var _bdi = 0; _bdi < _bdKeys.length; _bdi++) {
+                            var _bdk = _bdKeys[_bdi];
+                            var _bdv = readTime(_times, _bdk);
+                            var _pct = _totalFrame > 0 ? Math.round(_bdv / _totalFrame * 100) : 0;
+                            _bdLines.push('  ' + _bdk + ': ' + _bdv.toFixed(2) + 'ms (' + _pct + '%)');
+                        }
+                        _bdLines.push('  drawCalls: ' + (_prev.drawCalls || 0));
+                        lines.push(_bdLines.join('\n'));
+                    }
+                } catch(e) {}
+                try {
                     var si = UnityEngine.Shader.shaderIndex;
                     if (si) {
                         var count = Object.keys(si).length;
@@ -1609,13 +1658,15 @@
                 try {
                     var scene = getScene();
                     if (scene) {
-                        var camCount = 0, canvasCount = 0;
+                        var camCount = 0, canvasCount = 0, lightCount = 0;
+                        var _LIGHT_BUDGET = 4;
                         function countComps(node) {
                             var comps = getNodeComponents(node);
                             for (var i = 0; i < comps.length; i++) {
                                 var tn = getComponentTypeName(comps[i]);
                                 if (tn === 'Camera') camCount++;
                                 if (tn === 'Canvas') canvasCount++;
+                                if (tn === 'Light') lightCount++;
                             }
                             var ch = node._children || [];
                             for (var c = 0; c < ch.length; c++) countComps(ch[c]);
@@ -1624,8 +1675,26 @@
                         for (var i = 0; i < ch.length; i++) countComps(ch[i]);
                         lines.push('cameras: ' + camCount);
                         lines.push('canvases: ' + canvasCount);
+                        var lw = lightCount > _LIGHT_BUDGET ? ' [!! light budget]' : '';
+                        lines.push('lightCount: ' + lightCount + lw);
                     }
                 } catch(e) {}
+                try {
+                    var _ai = UnityEngine.RenderSettings.ambientIntensity;
+                    lines.push('ambientIntensity: ' + _ai);
+                } catch(e) { lines.push('ambientIntensity: n/a'); }
+                try {
+                    lines.push('fog: ' + (UnityEngine.RenderSettings.fog ? 'on' : 'off'));
+                } catch(e) { lines.push('fog: n/a'); }
+                try {
+                    lines.push('pixelLightCount: ' + UnityEngine.QualitySettings.pixelLightCount);
+                } catch(e) { lines.push('pixelLightCount: n/a'); }
+                try {
+                    lines.push('shadowDistance: ' + UnityEngine.QualitySettings.shadowDistance);
+                } catch(e) { lines.push('shadowDistance: n/a'); }
+                try {
+                    lines.push('vSyncCount: ' + UnityEngine.QualitySettings.vSyncCount);
+                } catch(e) { lines.push('vSyncCount: n/a'); }
                 try {
                     var w = UnityEngine.Screen.width, h = UnityEngine.Screen.height;
                     lines.push('screenRes: ' + w + 'x' + h);
@@ -2317,6 +2386,91 @@
                 return '';
             } catch(e) { return 'error: ' + e.message; }
         },
+        diagnoseText: function(path) {
+            try {
+                var r = resolveNode(path);
+                if (r.err) return 'error: ' + r.err;
+                var node = r.node;
+                var comps = getNodeComponents(node);
+                var TMP_TYPES = {'TextMeshProUGUI': 1, 'TextMeshPro': 1, 'TMP_Text': 1};
+                var comp = null;
+                for (var i = 0; i < comps.length; i++) {
+                    if (TMP_TYPES[getComponentTypeName(comps[i])]) { comp = comps[i]; break; }
+                }
+                if (!comp) return 'error: no TMP component on ' + path;
+                var t = getUnityObject(comp);
+                try { t.ForceMeshUpdate(false, false); } catch(_e) {}
+                var text = '';
+                try { text = t.text; } catch(_e) {}
+                var overflow = false, overflowIdx = -1, overflowMode = '?';
+                try { overflow = !!t.isTextOverflowing; } catch(_e) {}
+                try { overflowIdx = t.firstOverflowCharacterIndex; } catch(_e) {}
+                try { overflowMode = t.overflowMode; } catch(_e) {}
+                var richText = false;
+                try { richText = !!t.richText; } catch(_e) {}
+                var prefW = 0, prefH = 0;
+                try { prefW = t.preferredWidth; prefH = t.preferredHeight; } catch(_e) {}
+                var fontName = '?';
+                try { var fa = t.m_fontAsset; fontName = fa && fa.name ? fa.name : '?'; } catch(_e) {}
+                var missing = [];
+                try {
+                    var fa2 = t.m_fontAsset;
+                    if (fa2 && text) {
+                        for (var ci = 0; ci < text.length && missing.length < 20; ci++) {
+                            var code = text.charCodeAt(ci);
+                            if (code < 32) continue;
+                            try { if (!fa2.HasCharacter(code, true)) { var ch = text[ci]; if (missing.indexOf(ch) < 0) missing.push(ch); } } catch(_e) {}
+                        }
+                    }
+                } catch(_e) {}
+                var parts = [path + ' | text=' + (text.length > 40 ? text.slice(0,40)+'…' : text)];
+                parts.push('overflow=' + overflow + ' overflowMode=' + overflowMode + ' richText=' + richText);
+                parts.push('prefSize=' + prefW.toFixed(1) + 'x' + prefH.toFixed(1) + ' font=' + fontName);
+                if (missing.length) parts.push('missing=' + missing.join(','));
+                return parts.join(' | ');
+            } catch(e) { return 'error: ' + e.message; }
+        },
+
+        particleAudit: function() {
+            try {
+                var rows = [];
+                walkScene(function(node) {
+                    var uc = node._unityComponents;
+                    if (!uc || uc.particlesystem === undefined) return;
+                    var arr = uc.particlesystem;
+                    if (!Array.isArray(arr)) arr = [arr];
+                    for (var i = 0; i < arr.length; i++) {
+                        try {
+                            var ps = arr[i] && arr[i]._particleSystem;
+                            if (!ps) continue;
+                            var alive = ps.particleCount || 0;
+                            var maxP = (ps.main && ps.main.maxParticles) || 0;
+                            var ratio = maxP > 0 ? alive / maxP : 0;
+                            var rate = 0;
+                            try {
+                                var rot = ps.emission && ps.emission.rateOverTime;
+                                if (rot) rate = rot.constant !== undefined ? rot.constant : (rot.constantMax || 0);
+                            } catch(_e) {}
+                            rows.push({
+                                path: buildPath(node),
+                                alive: alive, max: maxP, ratio: ratio,
+                                play: !!ps.isPlaying, emit: !!ps.isEmitting,
+                                paused: !!ps.isPaused, rate: rate,
+                                t: ps.time !== undefined ? ps.time.toFixed(2) : '?'
+                            });
+                        } catch(_e) {}
+                    }
+                });
+                if (!rows.length) return 'no particle systems found';
+                rows.sort(function(a, b) { return b.ratio - a.ratio; });
+                return rows.map(function(r) {
+                    return r.path + ' | ' + r.alive + '/' + r.max +
+                        ' play=' + r.play + ' emit=' + r.emit +
+                        ' rate=' + r.rate + ' t=' + r.t;
+                }).join('\n');
+            } catch(e) { return 'error: ' + e.message; }
+        },
+
         physicsProbe: function() {
             var goblin = (typeof Goblin !== 'undefined' && !!Goblin.World) || false;
             var adapter = window.app && window.app.app && window.app.app.systems && window.app.app.systems.physics && window.app.app.systems.physics.adapter;
@@ -2330,6 +2484,420 @@
             try { if (typeof BakedPhysicsAdapter !== 'undefined' && BakedPhysicsAdapter._dynamicList) baked_entries = BakedPhysicsAdapter._dynamicList.length; } catch(e) {}
             return 'goblin=' + goblin + ' verlet=' + verlet + ' baked=' + baked + ' unified=' + unified +
                    ' goblin.bodies=' + goblin_bodies + ' verlet.particles=' + verlet_particles + ' baked.entries=' + baked_entries;
+        },
+
+        // S2.1 — pi insights state
+        piState: function() {
+            if (typeof window.pi === 'function') return 'pi-not-initialized';
+            if (typeof window.pi !== 'object' || !window.pi) return 'pi-absent';
+            var lines = [];
+            try {
+                var esn = window.pi.eventSequenceNumbers || {};
+                var keys = Object.keys(esn);
+                for (var i = 0; i < keys.length; i++) {
+                    lines.push(keys[i] + ':' + esn[keys[i]]);
+                }
+            } catch(e) {}
+            try { lines.push('totalEvents:' + (window.pi.totalEvents || 0)); } catch(e) {}
+            return lines.join('\n') || 'pi-ready';
+        },
+
+        // S2.1 — install ring-buffer recorder on window.pi.logEvent
+        installInsightsRecorder: function() {
+            if (typeof window.pi !== 'function' && (typeof window.pi !== 'object' || !window.pi)) return 'pi-absent';
+            if (window.pi.__luna_rec) return 'already';
+            var buf = [];
+            var seq = 0;
+            var CAP = 512;
+            var origLog = window.pi.logEvent;
+            window.pi.logEvent = function(name, reset, opts) {
+                buf.push({name: name, reset: reset, opts: opts, seq: ++seq, t: performance.now()});
+                if (buf.length > CAP) buf.shift();
+                if (origLog) origLog.apply(window.pi, arguments);
+            };
+            window.pi.__luna_rec = buf;
+            return 'installed';
+        },
+
+        // S2.1 — drain ring buffer to text
+        getInsightEvents: function() {
+            if (!window.pi || !window.pi.__luna_rec) return 'no recorder installed';
+            var buf = window.pi.__luna_rec;
+            var lines = [];
+            for (var i = 0; i < buf.length; i++) {
+                var e = buf[i];
+                var optsStr = JSON.stringify(e.opts || {});
+                if (optsStr.length > 120) optsStr = optsStr.slice(0, 120) + '…}';
+                lines.push(e.seq + '|' + e.t.toFixed(1) + '|' + (e.name || '') + '|' + optsStr);
+            }
+            return lines.join('\n') || 'empty';
+        },
+
+        // S2.2 — why is a UI element not tappable?
+        whyNotTappable: function(path) {
+            var r = resolveNode(path); if (r.err) return r.err;
+            var node = r.node;
+            var comps = getNodeComponents(node);
+            var lines = [];
+            // Check Selectable subclass
+            var selectable = null;
+            for (var i = 0; i < comps.length; i++) {
+                var t = getComponentTypeName(comps[i]);
+                if (t === 'Button' || t === 'Toggle' || t === 'Slider' || t === 'Selectable') {
+                    selectable = comps[i]; break;
+                }
+            }
+            if (selectable) {
+                try { lines.push('IsInteractable: ' + selectable.IsInteractable()); } catch(e) {
+                    try { lines.push('IsInteractable: ' + selectable.interactable); } catch(e2) { lines.push('IsInteractable: unknown'); }
+                }
+                try { lines.push('enabled: ' + selectable.enabled); } catch(e) {}
+            } else {
+                lines.push('no Selectable component found');
+            }
+            try { lines.push('activeSelf: ' + node._activeSelf); } catch(e) {}
+            // Check graphic raycastTarget
+            for (var j = 0; j < comps.length; j++) {
+                try {
+                    var rt = comps[j].raycastTarget;
+                    if (rt === false) { lines.push('raycastTarget: false (blocks raycast)'); break; }
+                } catch(e2) {}
+            }
+            // Walk parent chain for blocking CanvasGroup
+            var cur = node._parent;
+            while (cur) {
+                var curComps = getNodeComponents(cur);
+                for (var k = 0; k < curComps.length; k++) {
+                    var ct = getComponentTypeName(curComps[k]);
+                    if (ct === 'CanvasGroup') {
+                        try {
+                            var cg = curComps[k];
+                            if (cg.ignoreParentGroups) { cur = null; break; }
+                            if (cg.interactable === false) { lines.push('BlockedBy: CanvasGroup at ' + (cur.name || '?') + ' (interactable=false)'); }
+                            if (cg.blocksRaycasts === false) { lines.push('BlockedBy: CanvasGroup at ' + (cur.name || '?') + ' (blocksRaycasts=false)'); }
+                        } catch(e) {}
+                    }
+                }
+                if (!cur) break;
+                cur = cur._parent;
+            }
+            return lines.join('\n') || 'ok: no blocking issues found';
+        },
+
+        // S2.3 — full animator graph dump
+        getAnimatorGraph: function(path) {
+            var de = requireDebugger('Animator'); if (de) return de;
+            var fa = findAnimator(path); if (fa.err) return fa.err;
+            var node = fa.node; var animator = fa.animator;
+            var id = animator.handle ? animator.handle.$id : animator.$id;
+            var guid = node._guid;
+            var data = pc.Debugger.Animator.get({animator: {id: id, guid: guid}});
+            if (!data) return 'error: animator data unavailable';
+            var lines = ['ANIMATOR_GRAPH: ' + path];
+            var layerKeys = Object.keys(data.layers || []);
+            for (var li = 0; li < layerKeys.length; li++) {
+                var layer = (data.layers || [])[layerKeys[li]];
+                var lname = '?', lweight = 0;
+                try { lname = layer.name; } catch(e) {}
+                try { lweight = layer.weight; } catch(e) {}
+                lines.push('  layer[' + li + ']: ' + lname + ' (weight=' + lweight + ')');
+            }
+            var stateKeys = Object.keys(data.states || {});
+            for (var si = 0; si < stateKeys.length && lines.length < 55; si++) {
+                try {
+                    var s = data.states[stateKeys[si]];
+                    var skeys = Object.keys(s);
+                    var sname = '', snt = '', sloop = false, sspeed = 1;
+                    for (var ski = 0; ski < skeys.length; ski++) {
+                        if (skeys[ski] === 'name') sname = s.name;
+                        else if (skeys[ski] === 'normalizedTime') snt = s.normalizedTime;
+                        else if (skeys[ski] === 'isLooping') sloop = s.isLooping;
+                        else if (skeys[ski] === 'speed') sspeed = s.speed;
+                    }
+                    lines.push('  state: ' + sname + (snt !== '' ? ' t=' + (+snt).toFixed(2) : '') + (sloop ? ' (loop)' : '') + ' speed=' + sspeed);
+                } catch(e) {}
+            }
+            if (data.parameters) {
+                var paramKeys = Object.keys(data.parameters);
+                for (var pi = 0; pi < paramKeys.length && lines.length < 58; pi++) {
+                    try { lines.push('  param: ' + paramKeys[pi] + '=' + data.parameters[paramKeys[pi]]); } catch(e) {}
+                }
+            }
+            if (data.transitions) {
+                var txKeys = Object.keys(data.transitions);
+                for (var ti = 0; ti < txKeys.length && lines.length < 60; ti++) {
+                    try { lines.push('  transition: ' + txKeys[ti]); } catch(e) {}
+                }
+            }
+            return lines.join('\n');
+        },
+
+        // S2.4 — Luna performance counters (read .previous, not .current)
+        getLunaCounters: function() {
+            var c = window.app && window.app.app && window.app.app.counters;
+            if (!c || !c.previous) return 'error: app.counters not available';
+            var p = c.previous;
+            var lines = [];
+            var always = ['drawCalls','materialSwitches','verticesCount','trianglesCount',
+                          'particleSystems','particles','animators','animatorLayers',
+                          'activeBlendStates','uiElements'];
+            for (var i = 0; i < always.length; i++) {
+                try { lines.push(always[i] + ': ' + p[always[i]]); } catch(e) {}
+            }
+            var devOnly = ['totalSkinnedMeshes','visibleSkinnedMeshes',
+                           'offscreenUpdatedSkinnedMeshes','shadowCasters'];
+            for (var j = 0; j < devOnly.length; j++) {
+                try {
+                    var val = c.advancedMode ? p[devOnly[j]] : '[dev-only:n/a]';
+                    lines.push(devOnly[j] + ': ' + val);
+                } catch(e) {}
+            }
+            return lines.join('\n');
+        },
+
+        // S2.5 — runtime environment info with per-property try/catch
+        getEnvironment: function() {
+            if (typeof UnityEngine === 'undefined') return 'error: no Unity runtime';
+            var lines = [];
+            try { lines.push('creativeName: ' + UnityEngine.Application.creativeName); } catch(e) { lines.push('creativeName: n/a'); }
+            try { lines.push('lunaVersion: ' + UnityEngine.Application.lunaVersion); } catch(e) { lines.push('lunaVersion: n/a'); }
+            try { lines.push('lunaSHA: ' + UnityEngine.Application.lunaSHA); } catch(e) { lines.push('lunaSHA: n/a'); }
+            try { lines.push('targetFrameRate: ' + UnityEngine.Application.targetFrameRate); } catch(e) { lines.push('targetFrameRate: n/a'); }
+            try { lines.push('systemLanguage: ' + String(UnityEngine.Application.systemLanguage)); } catch(e) { lines.push('systemLanguage: n/a'); }
+            try { lines.push('internetReachability: ' + String(UnityEngine.Application.internetReachability)); } catch(e) { lines.push('internetReachability: n/a'); }
+            try { lines.push('platform: ' + String(UnityEngine.Application.platform)); } catch(e) { lines.push('platform: n/a'); }
+            try { lines.push('androidStoreLink: ' + UnityEngine.Application.androidStoreLink); } catch(e) { lines.push('androidStoreLink: n/a'); }
+            try { lines.push('iosStoreLink: ' + UnityEngine.Application.iosStoreLink); } catch(e) { lines.push('iosStoreLink: n/a'); }
+            try { lines.push('minifyEnabled: ' + UnityEngine.Application.minifyEnabled); } catch(e) { lines.push('minifyEnabled: n/a'); }
+            try { lines.push('isForceUncompressed: ' + UnityEngine.Application.isForceUncompressed); } catch(e) { lines.push('isForceUncompressed: n/a'); }
+            try { lines.push('deviceModel: ' + UnityEngine.SystemInfo.deviceModel); } catch(e) { lines.push('deviceModel: n/a'); }
+            try { lines.push('systemMemorySize: ' + UnityEngine.SystemInfo.systemMemorySize); } catch(e) { lines.push('systemMemorySize: n/a'); }
+            try { lines.push('maxTextureSize: ' + UnityEngine.SystemInfo.maxTextureSize); } catch(e) { lines.push('maxTextureSize: n/a'); }
+            try { lines.push('screenWidth: ' + UnityEngine.Screen.width); } catch(e) { lines.push('screenWidth: n/a'); }
+            try { lines.push('screenHeight: ' + UnityEngine.Screen.height); } catch(e) { lines.push('screenHeight: n/a'); }
+            try { lines.push('dpi: ' + UnityEngine.Screen.dpi); } catch(e) { lines.push('dpi: n/a'); }
+            try {
+                var sa = UnityEngine.Screen.safeArea;
+                lines.push('safeArea: x=' + sa.x + ' y=' + sa.y + ' width=' + sa.width + ' height=' + sa.height);
+            } catch(e) { lines.push('safeArea: n/a'); }
+            try { lines.push('devicePixelRatio: ' + (window.devicePixelRatio || 1)); } catch(e) {}
+            return lines.join('\n');
+        },
+
+        // S3.3 — Lifecycle waiter
+        waitForLunaEvent: function(name, timeoutMs) {
+            var ts = (window.lunaStartup && window.lunaStartup.timestamps) || {};
+            if (ts[name] > 0) return 'already:' + ts[name];
+            var done = false;
+            return new Promise(function(resolve) {
+                function h(e) {
+                    if (done) return;
+                    done = true;
+                    window.removeEventListener(name, h);
+                    resolve('fired:' + (performance.now() | 0));
+                }
+                window.addEventListener(name, h);
+                setTimeout(function() {
+                    if (done) return;
+                    done = true;
+                    window.removeEventListener(name, h);
+                    resolve('timeout:' + (timeoutMs > 0 ? timeoutMs : 10000));
+                }, timeoutMs > 0 ? timeoutMs : 10000);
+            });
+        },
+
+        tapLifecycle: function() {
+            if (window.__luna_lc_hooked) return 'already';
+            window.__luna_lc_hooked = true;
+            if (!window.__luna_lc_buf) window.__luna_lc_buf = [];
+            var buf = window.__luna_lc_buf;
+            var names = ['OnStart','GameStarted','GameEnded','OnPause','OnResume','OnLevelLoad','HapticTriggered'];
+            // Path A: Luna.Unity.LifeCycle wrapping
+            try {
+                if (window.Luna && Luna.Unity && Luna.Unity.LifeCycle) {
+                    for (var i = 0; i < names.length; i++) {
+                        (function(n) {
+                            try {
+                                var orig = Luna.Unity.LifeCycle[n];
+                                Luna.Unity.LifeCycle[n] = function() {
+                                    buf.push({t: performance.now(), name: n});
+                                    if (buf.length > 64) buf.shift();
+                                    if (typeof orig === 'function') orig.apply(this, arguments);
+                                };
+                            } catch(e) {}
+                        })(names[i]);
+                    }
+                }
+            } catch(e) {}
+            // Path B: window addEventListener for luna:* events
+            for (var j = 0; j < names.length; j++) {
+                (function(n) {
+                    try {
+                        window.addEventListener('luna:' + n.toLowerCase(), function() {
+                            buf.push({t: performance.now(), name: n});
+                            if (buf.length > 64) buf.shift();
+                        });
+                    } catch(e) {}
+                })(names[j]);
+            }
+            return 'hooked';
+        },
+
+        getLifecycleEvents: function(sinceTs) {
+            var buf = window.__luna_lc_buf || [];
+            var since = sinceTs || 0;
+            var lines = [];
+            for (var i = 0; i < buf.length; i++) {
+                if (buf[i].t > since) lines.push(buf[i].name + '|' + (buf[i].t | 0));
+            }
+            return lines.join('\n');
+        },
+
+        // S3.2 — DOTween inventory and control
+        tweenList: function() {
+            if (typeof DG === 'undefined' || !DG.Tweening || !DG.Tweening.Core || !DG.Tweening.Core.TweenManager) return 'DOTween not present in this build';
+            var TM = DG.Tweening.Core.TweenManager;
+            if (TM.totActiveTweens <= 0) return 'no active tweens';
+            if (!TM._activeTweens) return 'DOTween internal state unavailable';
+            if (TM._requiresActiveReorganization) TM.ReorganizeActiveTweens();
+            var lines = [];
+            for (var i = 0; i <= TM._maxActiveLookupId; i++) {
+                var t = TM._activeTweens[i];
+                if (!t) continue;
+                var dur, pos, loops, playing, complete, target;
+                try { dur = t.duration; } catch(e) { dur = '?'; }
+                try { pos = t.position; } catch(e) { pos = '?'; }
+                try { loops = t.loops; } catch(e) { loops = '?'; }
+                try { playing = t.isPlaying; } catch(e) { playing = '?'; }
+                try { complete = t.isComplete; } catch(e) { complete = '?'; }
+                try { target = t.target && (t.target.name || '?'); } catch(e) { target = '?'; }
+                lines.push(i + ' | dur=' + dur + ' | pos=' + pos + ' | loops=' + loops + ' | playing=' + playing + ' | complete=' + complete + ' | target=' + target);
+            }
+            return lines.length ? lines.join('\n') : 'no active tweens';
+        },
+
+        tweenControl: function(action) {
+            if (typeof DG === 'undefined' || !DG.Tweening || !DG.Tweening.Core || !DG.Tweening.Core.TweenManager) return 'DOTween not present in this build';
+            if (action === 'pause') { DG.Tweening.DOTween.PauseAll(); return 'paused all'; }
+            if (action === 'play') { DG.Tweening.DOTween.PlayAll(); return 'playing all'; }
+            if (action === 'kill') { DG.Tweening.DOTween.KillAll(); return 'killed all'; }
+            if (action === 'complete') { DG.Tweening.DOTween.CompleteAll(); return 'completed all'; }
+            return 'unknown action: ' + action;
+        },
+
+        // S3.4 — Physics forensics
+        rigidbodyDump: function(path) {
+            var scene = getScene();
+            if (!scene) return 'error: no scene';
+            var lines = [];
+            function visitRb(node) {
+                var comps = getNodeComponents(node);
+                for (var i = 0; i < comps.length; i++) {
+                    var t = getComponentTypeName(comps[i]);
+                    if (t.indexOf('Rigidbody') < 0) continue;
+                    var rb = comps[i];
+                    var name = (node && node.name) || '?';
+                    var vel, ang, mass, kin, grav, sleep, isStat, pos;
+                    try { vel = rb.velocity; vel = '(' + vel.x.toFixed(2) + ',' + vel.y.toFixed(2) + ',' + vel.z.toFixed(2) + ')'; } catch(e) { vel = '?'; }
+                    try { ang = rb.angularVelocity; ang = '(' + ang.x.toFixed(2) + ',' + ang.y.toFixed(2) + ',' + ang.z.toFixed(2) + ')'; } catch(e) { ang = '?'; }
+                    try { mass = rb.mass; } catch(e) { mass = '?'; }
+                    try { kin = rb.isKinematic; } catch(e) { kin = '?'; }
+                    try { grav = rb.useGravity; } catch(e) { grav = '?'; }
+                    try { sleep = rb.IsSleeping(); } catch(e) { try { sleep = rb.isSleeping; } catch(e2) { sleep = '?'; } }
+                    try { isStat = rb.isStatic; } catch(e) { isStat = '?'; }
+                    try { pos = rb.position; pos = '(' + pos.x.toFixed(2) + ',' + pos.y.toFixed(2) + ',' + pos.z.toFixed(2) + ')'; } catch(e) { pos = '?'; }
+                    lines.push(name + ' vel=' + vel + ' ang=' + ang + ' mass=' + mass + ' kin=' + kin + ' grav=' + grav + ' sleep=' + sleep + ' static=' + isStat + ' pos=' + pos);
+                }
+                var children = node._children || [];
+                for (var j = 0; j < children.length; j++) visitRb(children[j]);
+            }
+            var root = path ? findByPath(scene.root, path) : scene.root;
+            if (!root) return 'error: node not found: ' + path;
+            visitRb(root);
+            return lines.length ? lines.join('\n') : '(no rigidbodies)';
+        },
+
+        listBodies2d: function(maxN) {
+            var a = pc.app && pc.app.systems && pc.app.systems.physics2D && pc.app.systems.physics2D.adapter;
+            if (!a) return 'error: no physics2D';
+            var lines = [];
+            var cap = maxN || 40;
+            try {
+                var b = a.world.GetBodyList();
+                while (b && lines.length < cap) {
+                    try {
+                        var comp = a.getBodyComponentForBody(b);
+                        var ename = (comp && comp.entity && comp.entity.name) || '?';
+                        var btype = b.GetType();
+                        var awake = b.IsAwake();
+                        var bpos = b.GetPosition();
+                        var bvel = b.GetLinearVelocity();
+                        var px = bpos.x, py = bpos.y, vx = bvel.x, vy = bvel.y;
+                        lines.push(ename + ' type=' + btype + ' awake=' + awake + ' pos=(' + px.toFixed(2) + ',' + py.toFixed(2) + ') vel=(' + vx.toFixed(2) + ',' + vy.toFixed(2) + ')');
+                    } catch(e) { lines.push('(error: ' + e.message + ')'); }
+                    b = b.GetNext();
+                }
+            } catch(e) { return 'error: ' + e.message; }
+            return lines.length ? lines.join('\n') : '(no 2d bodies)';
+        },
+
+        raycast2d: function(ox, oy, dx, dy, dist) {
+            var a = pc.app && pc.app.systems && pc.app.systems.physics2D && pc.app.systems.physics2D.adapter;
+            if (!a) return 'error: no physics2D';
+            try {
+                var hit = pc.Physics2DSystem.raycast(ox, oy, dx, dy, dist || 1e9);
+                if (!hit) return 'no hit';
+                var colliderName = '?';
+                try {
+                    var code = hit.collider;
+                    if (typeof code === 'number') {
+                        var cols = a._colliders || [];
+                        for (var i = 0; i < cols.length; i++) {
+                            if (cols[i] && cols[i].code === code) { colliderName = (cols[i].entity && cols[i].entity.name) || String(code); break; }
+                        }
+                        if (colliderName === '?') colliderName = String(code);
+                    } else {
+                        colliderName = (hit.collider && hit.collider.name) || String(hit.collider);
+                    }
+                } catch(e) { colliderName = String(hit.collider); }
+                return 'hit collider=' + colliderName + ' point=(' + (hit.point && hit.point.x || 0).toFixed(2) + ',' + (hit.point && hit.point.y || 0).toFixed(2) + ')';
+            } catch(e) { return 'error: ' + e.message; }
+        },
+
+        overlapPoint2d: function(x, y) {
+            var a = pc.app && pc.app.systems && pc.app.systems.physics2D && pc.app.systems.physics2D.adapter;
+            if (!a) return 'error: no physics2D';
+            try {
+                var hit = pc.Physics2DSystem.overlapPoint(x, y);
+                if (!hit) return 'no overlap';
+                return 'overlap collider=' + (hit.name || String(hit));
+            } catch(e) { return 'error: ' + e.message; }
+        },
+
+        contactPairs: function() {
+            var a = pc.app && pc.app.systems && pc.app.systems.physics2D && pc.app.systems.physics2D.adapter;
+            if (!a) return 'error: no physics2D';
+            try {
+                var w = a.world;
+                var n = 0;
+                try { n = w._contacts ? w._contacts.length : (w.GetContactCount ? w.GetContactCount() : 0); } catch(e) {}
+                return 'contacts: ' + n + ' (names unavailable on this backend)';
+            } catch(e) { return 'error: ' + e.message; }
+        },
+
+        // S2.6 — Unity shader variant report (counts only, no log strings)
+        getUnityShaderReport: function() {
+            if (typeof pc === 'undefined' || !pc.UnityShader) return 'error: no pc.UnityShader';
+            var r;
+            try { r = pc.UnityShader.generateReport(); } catch(e) { return 'error: ' + e.message; }
+            if (!r) return 'error: empty report';
+            var lines = [];
+            var countFields = ['unityShaders','totalVariants','compiled','exported',
+                               'excluded','missing','vertexShaders','fragmentShaders'];
+            for (var i = 0; i < countFields.length; i++) {
+                try { lines.push(countFields[i] + ': ' + r[countFields[i]]); } catch(e) {}
+            }
+            return lines.join('\n') || 'ok: no data';
         }
     };
 })();

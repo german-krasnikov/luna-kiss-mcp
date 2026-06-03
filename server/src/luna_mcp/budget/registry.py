@@ -107,6 +107,10 @@ TOOL_COSTS: dict[str, ToolCost] = {
 
 DEFAULT = ToolCost(150, 800, "mid", None)
 
+# Merge extended cost table (avoids 200-LOC limit on this file)
+from .costs import EXTRA_TOOL_COSTS as _EXTRA  # noqa: E402
+TOOL_COSTS.update(_EXTRA)
+
 
 def cost_of(name: str, params: dict) -> ToolCost:
     base = TOOL_COSTS.get(name, DEFAULT)

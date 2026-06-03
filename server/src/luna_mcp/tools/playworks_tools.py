@@ -37,7 +37,7 @@ def register_playworks_tools(mcp, call_fn, *, exposed: set = frozenset()):
     async def step_frame() -> str:
         """Advance simulation exactly 1 frame (timeScale 0 -> 1 -> 0)."""
         return await call_fn("stepFrame")
-    maybe_expose(mcp, step_frame, exposed)
+    maybe_expose(mcp, step_frame, exposed, read_only=False)
 
     async def toggle_active(path: str) -> str:
         """Toggle GameObject active state by path. Returns 'activated'/'deactivated: <path>'."""
@@ -76,6 +76,26 @@ def register_playworks_tools(mcp, call_fn, *, exposed: set = frozenset()):
         return await call_fn("diagnoseBottlenecks")
     maybe_expose(mcp, diagnose_bottlenecks, exposed)
 
+    async def get_animator_graph(path: str) -> str:
+        """Full animator graph dump: layers, all states (name/normalizedTime/isLooping/speed), transitions, params."""
+        return await call_fn("getAnimatorGraph", path)
+    maybe_expose(mcp, get_animator_graph, exposed)
+
+    async def get_luna_counters() -> str:
+        """Luna performance counters from app.counters.previous: draw calls, vertices, particles, animators, UI elements. Dev-only counters labeled if advancedMode disabled."""
+        return await call_fn("getLunaCounters")
+    maybe_expose(mcp, get_luna_counters, exposed)
+
+    async def inspect_environment() -> str:
+        """Runtime environment info: Application, SystemInfo, Screen properties with per-property safety."""
+        return await call_fn("getEnvironment")
+    maybe_expose(mcp, inspect_environment, exposed)
+
+    async def get_shader_variants() -> str:
+        """Unity shader variant report: counts only (unityShaders, totalVariants, compiled, exported, missing, etc.)."""
+        return await call_fn("getUnityShaderReport")
+    maybe_expose(mcp, get_shader_variants, exposed)
+
     return {
         "get_performance_metrics": (get_performance_metrics, None),
         "diagnose_rendering": (diagnose_rendering, None),
@@ -91,4 +111,8 @@ def register_playworks_tools(mcp, call_fn, *, exposed: set = frozenset()):
         "audit_unused_assets": (audit_unused_assets, None),
         "get_build_recommendations": (get_build_recommendations, None),
         "diagnose_bottlenecks": (diagnose_bottlenecks, None),
+        "get_animator_graph": (get_animator_graph, None),
+        "get_luna_counters": (get_luna_counters, None),
+        "inspect_environment": (inspect_environment, None),
+        "get_shader_variants": (get_shader_variants, None),
     }

@@ -17,9 +17,17 @@ class Decision:
 
 
 class ToolRouter:
-    def __init__(self, tracker: BudgetTracker, sigmoid_p_success: Optional[float] = None):
+    def __init__(self, tracker: BudgetTracker, sigmoid_p_success: Optional[float] = None,
+                 calibrator=None):
         self.t = tracker
         self._p_success = sigmoid_p_success  # None = hard threshold mode
+        self._calibrator = calibrator  # CostCalibrator | None
+
+    def _calibrated_est_out(self, name: str, base_cost: ToolCost) -> int:
+        """Return EMA-blended est_out if calibrator has ≥5 samples, else raw."""
+        if self._calibrator is None:
+            return base_cost.est_out
+        return self._calibrator.calibrated_cost(name, base_cost.est_out)
 
     def _decide_sigmoid(self, name: str, params: dict, cost: ToolCost) -> Decision:
         from .autotune import allow_prob
@@ -43,7 +51,8 @@ class ToolRouter:
         if self._p_success is not None:
             return self._decide_sigmoid(name, params, c)
 
-        proj = c.est_in + c.est_out
+        est_out = self._calibrated_est_out(name, c)
+        proj = c.est_in + est_out
         rem = self.t.remaining()
         pct = self.t.pct()
 

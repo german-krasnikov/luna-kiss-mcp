@@ -3,7 +3,7 @@ import hashlib
 import re
 from collections import Counter, OrderedDict
 
-_CRITICAL_RE = re.compile(r'NullRef|Exception|Error|FATAL|Uncaught', re.I)
+_CRITICAL_RE = re.compile(r'NullRef|Exception|Error|FATAL|Uncaught|TypeLoadException|Missing shader variant|SVC_Luna', re.I)
 _NOISE_RE = re.compile(r'DOTween|Canvas|Layout|deprecated|obsolete', re.I)
 
 _ORDER = {"critical": 0, "info": 1, "noise": 2}

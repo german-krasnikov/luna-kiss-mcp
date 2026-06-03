@@ -196,7 +196,7 @@ def test_set_budget_auto_returns_derived_cap(tmp_path, monkeypatch):
             nonlocal result
             result = await bt._set_budget_auto(tmp_path)
         import asyncio
-        asyncio.get_event_loop().run_until_complete(run())
+        asyncio.run(run())
         assert result is not None
         assert "auto" in result.lower() or "cap=" in result
     except AttributeError:

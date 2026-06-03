@@ -36,7 +36,7 @@ async def test_simulate_touch_sends_touchstart_and_end(tools):
     result = await fn(50, 75)
     calls = bridge.send_cdp.call_args_list
     assert calls[0][1]["params"]["type"] == "touchStart"
-    assert calls[0][1]["params"]["touchPoints"] == [{"x": 50, "y": 75}]
+    assert calls[0][1]["params"]["touchPoints"] == [{"id": 0, "x": 50, "y": 75}]
     assert calls[1][1]["params"]["type"] == "touchEnd"
     assert calls[1][1]["params"]["touchPoints"] == []
     assert result == "touched (50, 75)"

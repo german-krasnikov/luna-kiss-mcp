@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional, Callable
 
 KEYWORD_ROUTES: dict[tuple, str] = {
+    ("recompile", "rebuild", "jake", "task", "build script"): "discover_jake_tasks path={path}",
     ("fall", "collide", "physics", "rigidbody", "gravity"): "diagnose_physics symptom={intent}",
     ("slow", "lag", "fps", "performance", "frame"):         "get_performance_metrics\ndiagnose_rendering",
     ("error", "crash", "exception", "null"):                "get_console level=E count=30",

@@ -8,7 +8,7 @@ MCP server for debugging [Luna](https://lunalabs.io) (Unity-to-JS transpiler) bu
 
 ## What it does
 
-Connects an AI coding assistant to a Luna build running in Chrome via the Chrome DevTools Protocol. 75 exposed tools covering:
+Connects an AI coding assistant to a Luna build running in Chrome via the Chrome DevTools Protocol. 112 exposed tools (+ 37 batch-only) covering:
 
 - **Scene inspection** — traverse hierarchy, read component properties, query objects by name/type
 - **Property editing** — set component fields at runtime, toggle flags, modify transforms
@@ -36,9 +36,9 @@ Works with any MCP-compatible client: **Claude Code**, **OpenAI Codex CLI**, Cur
 
 The [Luna Debugger](https://lunalabs.io) is a Chrome extension that ships with the Luna SDK. It exposes `pc.Debugger.*` APIs inside the browser, giving Luna MCP access to deep runtime introspection.
 
-**Without the extension** (~50 tools work): scene hierarchy, screenshots, console, performance metrics, property editing, transforms, animations, build analysis, physics probes — everything that runs via standard CDP and injected JS helpers.
+**Without the extension** (~60 tools work): scene hierarchy, screenshots, console, performance metrics, property editing, transforms, animations, build analysis, physics probes, diagnostics, lifecycle, interactions — everything that runs via standard CDP and injected JS helpers.
 
-**With the extension** (~75 tools work): adds component field introspection, type info, enum values, custom component registration, animator state details, collider visualization, and the raw debugger message API.
+**With the extension** (~112 tools work): adds component field introspection, type info, enum values, custom component registration, animator state details, collider visualization, raw debugger message API, coverage mapping, and advanced probe tools.
 
 To install: open a Luna build in Chrome, then follow the [Luna Debugger setup guide](https://docs.lunalabs.io/docs/playable/code/plugin-in-browser/debug-js/). The extension activates automatically when a Luna build is detected.
 
@@ -257,7 +257,9 @@ The server communicates via stdin/stdout using the MCP protocol. No HTTP server,
 | `LUNA_BUDGET_DISABLED` | `0` | Disable cost budget router entirely (`1` to disable) |
 | `LUNA_RECORD` | `0` | Record MCP sessions to JSONL (`1` to enable) |
 | `LUNA_MCP_DATA_DIR` | `~/.luna_mcp` | Data directory for lessons DB, baselines, templates |
-| `LUNA_COMPANY_HINT` | `AcmeCorp` | Company name for federation privacy scrub |
+| `LUNA_CHROME_BIN` | `google-chrome` | Chrome binary path for CI harness |
+| `LUNA_SCREENSHOT_FORMAT` | `jpeg` | Screenshot format: `jpeg` or `png` (jpeg saves 3-5x tokens) |
+| `LUNA_SCREENSHOT_QUALITY` | `75` | JPEG quality (1-100) for token efficiency |
 
 ## Troubleshooting
 
@@ -292,7 +294,7 @@ The server communicates via stdin/stdout using the MCP protocol. No HTTP server,
 
 ## Tool Highlights
 
-The server exposes 77 tools. Here are the most useful starting points:
+The server exposes 112 tools. Here are the most useful starting points:
 
 | Tool | Description |
 |------|-------------|
@@ -312,9 +314,22 @@ Use `batch` for multi-tool workflows — it saves 80%+ tokens compared to callin
 ## Development
 
 ```bash
-cd server && pytest tests/ -v          # 1700+ tests
+cd server && pytest tests/ -v          # 1936 tests across 147 test files
 cd server && python3 -m luna_mcp.server  # run server manually
 ```
+
+## CI Harness
+
+Luna MCP includes a headless CI runner for build validation:
+
+```bash
+python3 -m luna_mcp.cli.ci \
+  --baselines baseline1,baseline2 \
+  --build-path /path/to/build/index.html \
+  --chrome-bin /path/to/chrome
+```
+
+Generates JUnit XML report with timing and baseline comparison results.
 
 ## License
 

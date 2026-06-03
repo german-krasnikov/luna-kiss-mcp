@@ -20,6 +20,7 @@ Matching heuristic (conservative — prefer false-negatives over false-positives
   will still be caught.
 """
 import re
+import pytest
 from pathlib import Path
 
 # Paths
@@ -105,3 +106,64 @@ def test_all_python_calls_have_js_definition():
         + "\n".join(f"  {n}" for n in sorted(missing))
         + f"\n\nDefined JS helpers: {sorted(js_names)}"
     )
+
+
+def test_js_version_is_1_6_1():
+    text = _JS_FILE.read_text(encoding="utf-8")
+    assert "1.6.1" in text, "luna_helpers.js version must be 1.6.1"
+
+
+# ── M4: diagnoseRendering JS contract ────────────────────────────────────────
+
+def _diag_rendering_body() -> str:
+    """Extract the diagnoseRendering function body from luna_helpers.js."""
+    text = _JS_FILE.read_text(encoding="utf-8")
+    start = text.find("diagnoseRendering: function(")
+    assert start != -1, "diagnoseRendering not found in luna_helpers.js"
+    # find closing of the function — count braces
+    depth = 0
+    i = start
+    in_fn = False
+    while i < len(text):
+        if text[i] == '{':
+            depth += 1
+            in_fn = True
+        elif text[i] == '}':
+            depth -= 1
+            if in_fn and depth == 0:
+                return text[start:i+1]
+        i += 1
+    return text[start:]
+
+
+_DIAG_BODY = _diag_rendering_body()
+
+_NEW_FIELDS = ["ambientIntensity", "fog", "pixelLightCount", "shadowDistance", "vSyncCount"]
+
+
+@pytest.mark.parametrize("field_name", _NEW_FIELDS)
+def test_diag_rendering_field_present(field_name):
+    """Each new rendering field appears in diagnoseRendering body."""
+    assert field_name in _DIAG_BODY, f"{field_name!r} not found in diagnoseRendering"
+
+
+@pytest.mark.parametrize("field_name", _NEW_FIELDS)
+def test_diag_rendering_field_has_na_fallback(field_name):
+    """Each new rendering field has a try/catch emitting 'n/a'."""
+    # check that n/a appears near the field name (within 200 chars)
+    idx = _DIAG_BODY.find(field_name)
+    assert idx != -1
+    window = _DIAG_BODY[idx:idx+200]
+    assert "n/a" in window, f"'n/a' fallback not found near {field_name!r}"
+
+
+def test_diag_rendering_light_budget_threshold():
+    """Light budget heuristic compares > 4 and emits 'light budget'."""
+    assert "> _LIGHT_BUDGET" in _DIAG_BODY or "> 4" in _DIAG_BODY, \
+        "Light budget threshold (> 4) not found in diagnoseRendering"
+    assert "light budget" in _DIAG_BODY, "'light budget' string not found in diagnoseRendering"
+
+
+def test_diag_rendering_lightcount_field_present():
+    """lightCount field appears in diagnoseRendering body."""
+    assert "lightCount" in _DIAG_BODY, "lightCount not found in diagnoseRendering"

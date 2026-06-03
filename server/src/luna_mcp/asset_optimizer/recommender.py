@@ -27,9 +27,7 @@ class Recommender:
             if a.kind != "texture":
                 continue
             info = self._analyzer.analyze(a.abs_path)
-            action = self._action_for(a, info)
-            if action:
-                candidates.append(action)
+            candidates.extend(self._actions_for(a, info))
         # greedy: biggest save first, stop when target reached
         candidates.sort(key=lambda x: x.est_save_kb, reverse=True)
         plan: list[AssetAction] = []
@@ -41,25 +39,39 @@ class Recommender:
                 break
         return plan
 
-    def _action_for(self, asset: Asset, info: TextureInfo) -> AssetAction | None:
+    def _actions_for(self, asset: Asset, info: TextureInfo) -> list[AssetAction]:
+        """Return all applicable actions for a texture asset."""
         size_kb = asset.size // 1024
+        actions: list[AssetAction] = []
         if info.classification == "glyph":
-            return None
+            return actions
+        # Downscale gate: emit before compress so caller sees both
+        if max(info.width, info.height) > 1024:
+            scale = 1024 / max(info.width, info.height)
+            new_pixels = max(1, int(info.width * scale) * int(info.height * scale))
+            area_ratio = new_pixels / max(info.pixels, 1)
+            ds_save = max(1, int(size_kb * (1.0 - area_ratio)))
+            actions.append(AssetAction(asset.path, "downscale",
+                                       f"max dim {max(info.width, info.height)}px > 1024",
+                                       ds_save, "med"))
+        compress = self._compress_action(asset, info, size_kb)
+        if compress:
+            actions.append(self._enrich(compress, asset.abs_path))
+        return actions
+
+    def _compress_action(self, asset: Asset, info: TextureInfo, size_kb: int) -> AssetAction | None:
         if info.classification == "photo" and size_kb > 50:
-            act = AssetAction(asset.path, "compress_jpeg",
-                              "photo: lossy 70% acceptable",
-                              int(size_kb * 0.6), "low")
-            return self._enrich(act, asset.abs_path)
+            return AssetAction(asset.path, "compress_jpeg",
+                               "photo: lossy 70% acceptable",
+                               int(size_kb * 0.6), "low")
         if info.classification == "sprite" and size_kb > 30:
-            act = AssetAction(asset.path, "compress_webp",
-                              "sprite: webp lossless",
-                              int(size_kb * 0.3), "low")
-            return self._enrich(act, asset.abs_path)
+            return AssetAction(asset.path, "compress_webp",
+                               "sprite: webp lossless",
+                               int(size_kb * 0.3), "low")
         if info.classification == "ui" and size_kb > 20:
-            act = AssetAction(asset.path, "compress_webp",
-                              "ui: webp lossless",
-                              int(size_kb * 0.2), "med")
-            return self._enrich(act, asset.abs_path)
+            return AssetAction(asset.path, "compress_webp",
+                               "ui: webp lossless",
+                               int(size_kb * 0.2), "med")
         return None
 
     def _enrich(self, act: AssetAction, abs_path: str) -> AssetAction:

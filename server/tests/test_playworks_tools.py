@@ -63,6 +63,16 @@ async def test_diagnose_rendering_not_connected():
         await diagnose_rendering()
 
 
+async def test_diagnose_rendering_passes_through_lightcount(mock_runtime):
+    """S5.5: diagnose_rendering passes lightCount field through unchanged."""
+    mock_runtime.call = AsyncMock(
+        return_value="RENDERING DIAGNOSTICS:\nwebgl: 2.0\nlightCount: 3"
+    )
+    from luna_mcp.server import diagnose_rendering
+    result = await diagnose_rendering()
+    assert "lightCount:" in result
+
+
 # ── audit_textures ──────────────────────────────────────────────────────────
 
 async def test_audit_textures_calls_helper(mock_runtime):

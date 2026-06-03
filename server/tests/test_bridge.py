@@ -564,7 +564,7 @@ async def test_screenshot_auto_reconnects():
 
     call_count = [0]
 
-    async def fake_screenshot_impl():
+    async def fake_screenshot_impl(**kwargs):
         call_count[0] += 1
         if call_count[0] == 1:
             raise ConnectionError("ws closed")

@@ -242,8 +242,11 @@ async def test_screenshot_saves_file(mock_bridge, tmp_path, monkeypatch):
     monkeypatch.setattr(tempfile, "gettempdir", lambda: str(tmp_path))
     from luna_mcp.server import screenshot
     result = await screenshot()
-    assert "luna_screenshot.png" in result
-    assert (tmp_path / "luna_screenshot.png").exists()
+    assert "luna_screenshot" in result
+    # Extension depends on SCREENSHOT_FORMAT config (jpeg → .jpg, png → .png)
+    from luna_mcp.config import SCREENSHOT_FORMAT
+    ext = ".jpg" if SCREENSHOT_FORMAT == "jpeg" else ".png"
+    assert (tmp_path / f"luna_screenshot{ext}").exists()
 
 
 async def test_screenshot_not_connected_raises():

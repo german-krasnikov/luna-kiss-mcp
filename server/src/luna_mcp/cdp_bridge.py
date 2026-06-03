@@ -34,6 +34,11 @@ class CDPBridge:
         self._debugger_paused: dict | None = None
         self._scripts: dict[str, str] = {}  # url -> scriptId
         self.bus = EventBus()
+        # Tracing state
+        self._trace_chunks: list = []
+        self._tracing_active: bool = False
+        self._trace_done: asyncio.Event = asyncio.Event()
+        self._trace_overflow: bool = False
 
     @property
     def connected(self) -> bool:
@@ -195,16 +200,45 @@ class CDPBridge:
                     "text": f"[{entry.get('source', 'log')}] {entry.get('text', '')}"}
         return None
 
-    async def screenshot(self) -> bytes:
+    async def screenshot(self, *, format: str = "png", quality: int = 0,
+                         clip: dict | None = None, max_width: int = 0) -> bytes:
         try:
-            return await self._screenshot_impl()
+            return await self._screenshot_impl(format=format, quality=quality,
+                                               clip=clip, max_width=max_width)
         except (ConnectionError, websockets.ConnectionClosed):
             await self.reconnect()
-            return await self._screenshot_impl()
+            return await self._screenshot_impl(format=format, quality=quality,
+                                               clip=clip, max_width=max_width)
 
-    async def _screenshot_impl(self) -> bytes:
-        result = await self.send_cdp("Page.captureScreenshot", {"format": "png"})
-        return base64.b64decode(result["result"]["data"])
+    async def _screenshot_impl(self, *, format: str = "png", quality: int = 0,
+                                clip: dict | None = None, max_width: int = 0) -> bytes:
+        params: dict = {"format": format}
+        if format == "jpeg" and quality:
+            params["quality"] = quality
+        if clip:
+            params["clip"] = clip
+        result = await self.send_cdp("Page.captureScreenshot", params)
+        raw = base64.b64decode(result["result"]["data"])
+        if max_width > 0:
+            try:
+                from PIL import Image
+                import io
+                img = Image.open(io.BytesIO(raw))
+                if img.width > max_width:
+                    ratio = max_width / img.width
+                    new_h = max(1, round(img.height * ratio))
+                    img = img.resize((max_width, new_h), Image.LANCZOS)
+                    buf = io.BytesIO()
+                    save_fmt = "JPEG" if format == "jpeg" else "PNG"
+                    if save_fmt == "JPEG":
+                        img = img.convert("RGB")
+                        img.save(buf, format="JPEG", quality=quality or 85)
+                    else:
+                        img.save(buf, format="PNG")
+                    return buf.getvalue()
+            except ImportError:
+                pass
+        return raw
 
     async def send_cdp(self, method: str, params: dict = None, timeout: float = 30.0) -> dict:
         if self._ws is None:
@@ -243,6 +277,57 @@ class CDPBridge:
             frame = params.get("frame", {})
             self.bus.publish("frame", {"text": frame.get("url", ""), "id": frame.get("id", "")})
 
+    def _handle_event(self, data: dict) -> None:
+        """Process a CDP event (method-based). Called from _read_loop and tests."""
+        method = data.get("method", "")
+        if method == "Tracing.dataCollected" and self._tracing_active:
+            if len(self._trace_chunks) <= 200_000:
+                self._trace_chunks.extend(data.get("params", {}).get("value", []))
+                if len(self._trace_chunks) > 200_000:
+                    self._trace_overflow = True
+            return
+        if method == "Tracing.tracingComplete":
+            self._tracing_active = False
+            self._trace_done.set()
+            return
+        if method == "Debugger.paused":
+            self._debugger_paused = data.get("params", {})
+        elif method == "Debugger.resumed":
+            self._debugger_paused = None
+        elif method == "Page.frameNavigated":
+            if self._on_frame_navigated:
+                asyncio.create_task(self._on_frame_navigated())
+        elif method == "Debugger.scriptParsed":
+            params = data.get("params", {})
+            url = params.get("url", "")
+            script_id = params.get("scriptId", "")
+            if url:
+                self._scripts[url] = script_id
+        net = self._parse_network_event(data)
+        if net:
+            self._network_requests.append(net)
+            if len(self._network_requests) > 200:
+                self._network_requests = self._network_requests[-200:]
+        self._dispatch_to_bus(data)
+        self._events.put_nowait(data)
+
+    def start_trace_collection(self) -> None:
+        """Prepare bridge to collect Tracing.dataCollected events."""
+        self._trace_chunks = []
+        self._trace_overflow = False
+        self._trace_done.clear()
+        self._tracing_active = True
+
+    async def wait_trace_complete(self, timeout: float = 10.0) -> None:
+        """Wait until Tracing.tracingComplete event arrives."""
+        await asyncio.wait_for(self._trace_done.wait(), timeout)
+
+    def take_trace_chunks(self) -> list:
+        """Return collected trace chunks and clear internal buffer."""
+        chunks = self._trace_chunks
+        self._trace_chunks = []
+        return chunks
+
     async def _read_loop(self):
         try:
             async for raw in self._ws:
@@ -252,27 +337,7 @@ class CDPBridge:
                     if msg_id is not None and msg_id in self._pending:
                         self._pending[msg_id].set_result(data)
                     else:
-                        method = data.get("method", "")
-                        if method == "Debugger.paused":
-                            self._debugger_paused = data.get("params", {})
-                        elif method == "Debugger.resumed":
-                            self._debugger_paused = None
-                        elif method == "Page.frameNavigated":
-                            if self._on_frame_navigated:
-                                asyncio.create_task(self._on_frame_navigated())
-                        elif method == "Debugger.scriptParsed":
-                            params = data.get("params", {})
-                            url = params.get("url", "")
-                            script_id = params.get("scriptId", "")
-                            if url:
-                                self._scripts[url] = script_id
-                        net = self._parse_network_event(data)
-                        if net:
-                            self._network_requests.append(net)
-                            if len(self._network_requests) > 200:
-                                self._network_requests = self._network_requests[-200:]
-                        self._dispatch_to_bus(data)
-                        await self._events.put(data)
+                        self._handle_event(data)
                 except Exception as exc:
                     _log.warning("_read_loop: bad frame skipped: %s", exc)
         except Exception as exc:

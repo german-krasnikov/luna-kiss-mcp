@@ -25,17 +25,20 @@ def register_diagnostics_tools(mcp, send_fn, call_fn, bridge_getter, ensure_fn=N
     maybe_expose(mcp, eval_js, exposed)
 
     async def screenshot() -> str:
-        """Capture a full-page screenshot as PNG, saved to /tmp. Returns the file path. Use to visually verify scene state, UI layout, or collider overlays."""
+        """Capture a full-page screenshot, saved to /tmp. Returns the file path. Use to visually verify scene state, UI layout, or collider overlays."""
+        from ..config import SCREENSHOT_FORMAT, SCREENSHOT_QUALITY, SCREENSHOT_MAX_WIDTH
         if ensure_fn:
             await ensure_fn()
         bridge = bridge_getter()
         if bridge is None:
             raise ToolError("Server not initialized")
         try:
-            data = await bridge.screenshot()
+            data = await bridge.screenshot(format=SCREENSHOT_FORMAT, quality=SCREENSHOT_QUALITY,
+                                           max_width=SCREENSHOT_MAX_WIDTH)
         except Exception as e:
             raise ToolError(f"Screenshot failed: {e}")
-        path = os.path.join(tempfile.gettempdir(), "luna_screenshot.png")
+        ext = ".jpg" if SCREENSHOT_FORMAT == "jpeg" else ".png"
+        path = os.path.join(tempfile.gettempdir(), f"luna_screenshot{ext}")
         with open(path, "wb") as f:
             f.write(data)
         return f"Screenshot saved to: {path}"
@@ -165,6 +168,7 @@ def register_diagnostics_tools(mcp, send_fn, call_fn, bridge_getter, ensure_fn=N
         for k, v in (data.get("measured") or {}).items():
             lines.append(f"  {k}: {v}ms")
         return "\n".join(lines)
+    maybe_expose(mcp, get_startup_timing, exposed)
 
     async def luna_report(report: str = "debug") -> str:
         """Run Luna's built-in reports. report: startup|shader|debug.

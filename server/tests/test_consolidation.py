@@ -32,7 +32,7 @@ def test_maybe_expose_name_override():
 def test_exposed_tools_constant_exists():
     from luna_mcp.server import EXPOSED_TOOLS
     assert isinstance(EXPOSED_TOOLS, (set, frozenset))
-    assert len(EXPOSED_TOOLS) == 75  # 77 - 2 (F7) - 2 (B4 twin_stats/train_twin) + 2 (C4 luna_config_get/diff)
+    assert len(EXPOSED_TOOLS) == 112  # 106 + 6 Sprint-6 (3 probes + get_playground_fields + set_playground_field + step_frame)
 
 
 def test_batch_only_tools_still_importable():

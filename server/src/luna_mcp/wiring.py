@@ -28,6 +28,9 @@ from .tools.stats_tools import register_stats_tools
 from .tools.macro_tools import register_macro_tools
 from .tools.record_tools import register_record_tools
 from .tools.physics_tools import register_physics_tools
+from .tools.particle_tools import register_particle_tools
+from .tools.text_tools import register_text_tools
+from .tools.debug_native_tools import register_debug_native_tools
 from .tools.build_diff_tools import register_build_diff_tools
 from .tools.jakefile_tools import register_jakefile_tools
 from .tools.pc_replacer_tools import register_pc_replacer_tools
@@ -42,6 +45,20 @@ from .tools.distiller_tools import register_distiller_tools
 from .tools.explainer_tools import register_explainer_tools
 from .tools.playtest_tools import register_playtest_tools
 from .tools.intent_tools import register_intent_tools
+from .tools.perf_tools import register_perf_tools
+from .tools.emulation_tools import register_emulation_tools
+from .tools.netcond_tools import register_netcond_tools
+from .tools.heap_tools import register_heap_tools
+from .tools.trace_tools import register_trace_tools
+from .tools.coverage_tools import register_coverage_tools
+from .tools.insights_tools import register_insights_tools
+from .tools.tappable_tools import register_tappable_tools
+from .tools.lifecycle_tools import register_lifecycle_tools
+from .tools.tween_tools import register_tween_tools
+from .tools.physics_forensics_tools import register_physics_forensics_tools
+from .tools.cs_linter_tools import register_cs_linter_tools
+from .tools.jake_tasks_tools import register_jake_tasks_tools
+from .tools.playground_tools import register_playground_tools
 from .regression.tools import register_regression_tools
 from .tools.timeline_tools import register_timeline_tools
 from .regression.store import BaselineStore
@@ -88,6 +105,10 @@ EXPOSED_TOOLS: set[str] = {
     "audit_assets", "analyze_texture", "recommend_asset_optimization",
     "discover_flags", "list_flag_catalog", "recommend_flags",
     "optimize_build_size", "optimize_status",
+    "cdp_perf_metrics",
+    "audit_particles",
+    "diagnose_text",
+    "luna_debug_discover",
     "check_compliance",
     "distill_hierarchy",
     "explain_code", "explain_function",
@@ -95,6 +116,37 @@ EXPOSED_TOOLS: set[str] = {
     "watchdog_report",
     "triage_console",
     "route_intent",
+    "insights_state", "insights_events",
+    "why_not_tappable", "hit_test",
+    "get_animator_graph", "get_luna_counters", "inspect_environment", "get_shader_variants",
+    # S3.1 gestures
+    "simulate_swipe",
+    # S3.3 lifecycle
+    "wait_for_lifecycle", "lifecycle_events",
+    # S3.2 tween
+    "tween_inventory", "tween_health",
+    # S3.4 physics forensics
+    "inspect_bodies", "physics_query",
+    # S4.1 coverage
+    "coverage_report",
+    # S4.2 emulation
+    "set_cpu_throttle", "set_device_metrics", "clear_emulation",
+    # S4.3 tracing
+    "trace_frames",
+    # S4.4 heap
+    "heap_sample",
+    # S4.5 network conditions
+    "set_network", "block_urls", "clear_network",
+    # S5.2 C# linter
+    "lint_csharp", "audit_required_apis",
+    # S5.4 Jake tasks
+    "discover_jake_tasks",
+    # S6.1c GPU/startup probes
+    "get_gpu_info", "get_vram_usage", "get_startup_timing",
+    # S6.3 playground
+    "get_playground_fields", "set_playground_field",
+    # S6.6 step_frame
+    "step_frame",
 }
 
 
@@ -119,6 +171,12 @@ def register_all_tools(
     merge_tool_groups(all_tools, register_diagnostics_tools(
         mcp, send_fn, call_fn, get_bridge, ensure_connected, exposed=EXPOSED_TOOLS
     ))
+    merge_tool_groups(all_tools, register_perf_tools(mcp, get_bridge, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_emulation_tools(mcp, get_bridge, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_netcond_tools(mcp, get_bridge, ensure_connected, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_heap_tools(mcp, get_bridge, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_trace_tools(mcp, get_bridge, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_coverage_tools(mcp, get_bridge, require_source_mapper, exposed=EXPOSED_TOOLS))
     merge_tool_groups(all_tools, register_debugger_tools(mcp, require_debugger, exposed=EXPOSED_TOOLS))
     merge_tool_groups(all_tools, register_visual_tools(mcp, call_fn, get_bridge, exposed=EXPOSED_TOOLS))
     merge_tool_groups(all_tools, register_reflection_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
@@ -169,6 +227,9 @@ def register_all_tools(
 
     merge_tool_groups(all_tools, register_record_tools(mcp, exposed=EXPOSED_TOOLS))
     merge_tool_groups(all_tools, register_physics_tools(mcp, None, None, None, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_particle_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_text_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_debug_native_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
 
     # Build Diff
     from .build_diff.storage import BuildStore as _BuildStore
@@ -239,6 +300,22 @@ def register_all_tools(
 
     # Luna config tools (C4)
     merge_tool_groups(all_tools, register_luna_config_tools(mcp, exposed=EXPOSED_TOOLS))
+
+    # Sprint 2 additions
+    merge_tool_groups(all_tools, register_insights_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_tappable_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+
+    # Sprint 3 additions
+    merge_tool_groups(all_tools, register_lifecycle_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_tween_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_physics_forensics_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
+
+    # Sprint 5 additions
+    merge_tool_groups(all_tools, register_cs_linter_tools(mcp, exposed=EXPOSED_TOOLS))
+    merge_tool_groups(all_tools, register_jake_tasks_tools(mcp, exposed=EXPOSED_TOOLS))
+
+    # Sprint 6 additions
+    merge_tool_groups(all_tools, register_playground_tools(mcp, call_fn, exposed=EXPOSED_TOOLS))
 
     # Intent Router last — so tool_names covers all registered tools
     merge_tool_groups(all_tools, register_intent_tools(

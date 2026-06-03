@@ -22,6 +22,9 @@ class SourceMapper:
                 return sid
         return None
 
+    def find_script_id(self, filename: str) -> str | None:
+        return self._find_script_id(filename)
+
     async def _get_source(self, script_id: str) -> str:
         if script_id in self._source_cache:
             return self._source_cache[script_id]
@@ -29,6 +32,9 @@ class SourceMapper:
         source = result.get("result", {}).get("scriptSource", "")
         self._source_cache[script_id] = source
         return source
+
+    async def get_source(self, script_id: str) -> str:
+        return await self._get_source(script_id)
 
     async def _search(self, script_id: str, query: str) -> list[dict]:
         result = await self._bridge.send_cdp("Debugger.searchInContent", {

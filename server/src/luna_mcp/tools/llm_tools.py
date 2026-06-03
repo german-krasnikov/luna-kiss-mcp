@@ -37,10 +37,13 @@ def register_llm_tools(mcp, sampling, get_bridge: Callable, *, exposed: set = fr
     """Register LLM visual tools. Returns {name: (fn, params)} for batch."""
 
     async def _take_screenshot() -> str:
+        from ..config import SCREENSHOT_FORMAT, SCREENSHOT_QUALITY, SCREENSHOT_MAX_WIDTH
         bridge = get_bridge()
-        data = await bridge.screenshot()
+        data = await bridge.screenshot(format=SCREENSHOT_FORMAT, quality=SCREENSHOT_QUALITY,
+                                       max_width=SCREENSHOT_MAX_WIDTH)
         _cleanup_old_tmp()
-        path = os.path.join(tempfile.gettempdir(), f"luna_{uuid.uuid4().hex[:8]}.png")
+        ext = ".jpg" if SCREENSHOT_FORMAT == "jpeg" else ".png"
+        path = os.path.join(tempfile.gettempdir(), f"luna_{uuid.uuid4().hex[:8]}{ext}")
         with open(path, "wb") as f:
             f.write(data)
         _track_tmp(pathlib.Path(path))

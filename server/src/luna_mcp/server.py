@@ -49,10 +49,10 @@ _metrics: MetricsRegistry = MetricsRegistry(
     sink=None,
 )
 _budget_tracker: BudgetTracker = _metrics
-_budget_router: ToolRouter = ToolRouter(_metrics)
-_lessons_store: LessonStore | None = None
 from .budget.calibrator import CostCalibrator as _CostCalibrator
 _calibrator: _CostCalibrator = _CostCalibrator()
+_budget_router: ToolRouter = ToolRouter(_metrics, calibrator=_calibrator)
+_lessons_store: LessonStore | None = None
 _watchdog: Watchdog | None = None
 from .watchdog.brain_scan import BrainScanner as _BrainScanner
 _brain_scanner: "_BrainScanner | None" = None
@@ -147,9 +147,10 @@ async def lifespan(app):
     _budget_mode = os.environ.get("LUNA_BUDGET_MODE", "work")
     if _budget_mode == "auto":
         from luna_mcp.budget import _init_budget_auto
-        _auto_tracker, _ = _init_budget_auto()
+        _auto_tracker, _auto_router = _init_budget_auto()
         _metrics.cap = _auto_tracker.cap
         _metrics._history = _auto_tracker._history
+        _budget_router._p_success = _auto_router._p_success
     else:
         from luna_mcp.budget.tracker import PRESETS as _PRESETS
         _metrics.cap = _PRESETS.get(_budget_mode, 30_000)
