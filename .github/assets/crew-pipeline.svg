@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 130" width="1000" height="130" role="img" aria-labelledby="cpipe-title cpipe-desc">
+  <title id="cpipe-title">Build pipeline — architect to developer to reviewer to doc-keeper</title>
+  <desc id="cpipe-desc">A horizontal flow of four stations connected by a glowing cyan-to-violet telemetry sweep: architect, developer (TDD), reviewer, doc-keeper.</desc>
+  <defs>
+    <linearGradient id="cpipe__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+    <linearGradient id="cpipe__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <filter id="cpipe__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cpipe__glowAccent" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .flow { stroke-dasharray: 14 10; animation: cpipe_flow 3s linear infinite; }
+    .pulse { animation: cpipe_pulse 2.4s ease-in-out infinite; }
+    .p1 { animation-delay: 0s; } .p2 { animation-delay: .6s; }
+    .p3 { animation-delay: 1.2s; } .p4 { animation-delay: 1.8s; }
+    @keyframes cpipe_flow { to { stroke-dashoffset: -48; } }
+    @keyframes cpipe_pulse { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect x="0" y="0" width="1000" height="130" rx="10" fill="url(#cpipe__skyGrad)"/>
+  <rect x="0.5" y="0.5" width="999" height="129" rx="10" fill="none" stroke="#222742" stroke-width="1"/>
+
+  <!-- connecting line -->
+  <line x1="120" y1="65" x2="880" y2="65" stroke="#222742" stroke-width="2" stroke-linecap="round"/>
+  <line class="flow" x1="120" y1="65" x2="880" y2="65" stroke="url(#cpipe__accentArc)" stroke-width="2"
+        stroke-linecap="round" filter="url(#cpipe__glowAccent)"/>
+
+  <!-- stations -->
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle">
+    <!-- architect -->
+    <g transform="translate(120,65)">
+      <circle class="pulse p1" r="11" fill="#0E1120" stroke="#8B7DFF" stroke-width="2" filter="url(#cpipe__glowAccent)"/>
+      <circle r="3.5" fill="#8B7DFF"/>
+      <text y="-26" font-size="14" font-weight="700" fill="#E8ECF6">architect</text>
+      <text y="34" font-size="11" fill="#7E879F" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Opus</text>
+    </g>
+    <!-- developer -->
+    <g transform="translate(373,65)">
+      <circle class="pulse p2" r="11" fill="#0E1120" stroke="#39E0FF" stroke-width="2" filter="url(#cpipe__glowAccent)"/>
+      <circle r="3.5" fill="#39E0FF"/>
+      <text y="-26" font-size="14" font-weight="700" fill="#E8ECF6">developer</text>
+      <text y="34" font-size="11" fill="#7E879F" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Sonnet · TDD</text>
+    </g>
+    <!-- reviewer -->
+    <g transform="translate(627,65)">
+      <circle class="pulse p3" r="11" fill="#0E1120" stroke="#39E0FF" stroke-width="2" filter="url(#cpipe__glowAccent)"/>
+      <circle r="3.5" fill="#39E0FF"/>
+      <text y="-26" font-size="14" font-weight="700" fill="#E8ECF6">reviewer</text>
+      <text y="34" font-size="11" fill="#7E879F" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Sonnet</text>
+    </g>
+    <!-- doc-keeper -->
+    <g transform="translate(880,65)">
+      <circle class="pulse p4" r="11" fill="#0E1120" stroke="#8B7DFF" stroke-width="2" filter="url(#cpipe__glowAccent)"/>
+      <circle r="3.5" fill="#8B7DFF"/>
+      <text y="-26" font-size="14" font-weight="700" fill="#E8ECF6">doc-keeper</text>
+      <text y="34" font-size="11" fill="#7E879F" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">Haiku</text>
+    </g>
+  </g>
+
+  <!-- arrow glyphs -->
+  <g fill="#566079">
+    <path d="M242,61 l8,4 l-8,4 z"/>
+    <path d="M496,61 l8,4 l-8,4 z"/>
+    <path d="M750,61 l8,4 l-8,4 z"/>
+  </g>
+</svg>

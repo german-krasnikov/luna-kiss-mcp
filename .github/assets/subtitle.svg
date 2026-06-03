@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 64" width="760" height="64" role="img" aria-label="Luna MCP taglines: 149 tools over CDP. Token-minimal by design. Works with Claude Code and Codex. Scene . Physics . Visual . Build.">
+  <title>Luna MCP — animated tagline cycling four phrases in monospace with a neon-cyan caret</title>
+  <defs>
+    <linearGradient id="sub__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <radialGradient id="sub__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+    <filter id="sub__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="sub__moonGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Clip used to mask each phrase as the typewriter reveals it -->
+    <clipPath id="sub__reveal">
+      <rect x="74" y="0" width="0" height="64">
+        <!-- 4 phrases x 6s = 24s loop. Each phrase: type 1.6s, hold 3.0s, erase 1.0s, gap 0.4s -->
+        <animate attributeName="width" dur="24s" repeatCount="indefinite" calcMode="spline"
+          keyTimes="0; 0.0667; 0.1917; 0.2333; 0.25; 0.3167; 0.4417; 0.4833; 0.5; 0.5667; 0.6917; 0.7333; 0.75; 0.8167; 0.9417; 0.9833; 1"
+          values="0;560;560;0;0;560;560;0;0;560;560;0;0;560;560;0;0"
+          keySplines="0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"/>
+      </rect>
+    </clipPath>
+  </defs>
+
+  <style>
+    .stars circle { animation: sub_twinkle 2.4s ease-in-out infinite; }
+    .s2 { animation-delay: 0.8s; }
+    .s3 { animation-delay: 1.6s; }
+    @keyframes sub_twinkle { 0%,100% { opacity: 0.3; } 50% { opacity: 0.85; } }
+
+    .caret { animation: sub_blink 1s steps(1,end) infinite; }
+    @keyframes sub_blink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+
+    /* Each phrase fades in only during its own 6s window so the clip reveal reads correctly */
+    .phrase { opacity: 0; }
+    .p1 { animation: sub_p1 24s linear infinite; }
+    .p2 { animation: sub_p2 24s linear infinite; }
+    .p3 { animation: sub_p3 24s linear infinite; }
+    .p4 { animation: sub_p4 24s linear infinite; }
+    @keyframes sub_p1 { 0%,24.9% { opacity: 1; } 25%,100% { opacity: 0; } }
+    @keyframes sub_p2 { 0%,24.9% { opacity: 0; } 25%,49.9% { opacity: 1; } 50%,100% { opacity: 0; } }
+    @keyframes sub_p3 { 0%,49.9% { opacity: 0; } 50%,74.9% { opacity: 1; } 75%,100% { opacity: 0; } }
+    @keyframes sub_p4 { 0%,74.9% { opacity: 0; } 75%,100% { opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+      .stars circle { opacity: 0.6; }
+      .caret { opacity: 1; }
+      .phrase { opacity: 0; }
+      .p1 { opacity: 1; }      /* static first frame: show phrase 1 fully */
+      .reveal-static { width: 560px !important; }
+    }
+  </style>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="760" height="64" rx="10" fill="#0E1120"/>
+  <rect x="0.5" y="0.5" width="759" height="63" rx="10" fill="none" stroke="#222742" stroke-width="1"/>
+
+  <!-- Starfield: scattered, never on a grid, twinkle via opacity only -->
+  <g class="stars">
+    <circle cx="612" cy="14" r="0.9" fill="#F4F7FF" opacity="0.5"/>
+    <circle cx="668" cy="40" r="0.7" fill="#F4F7FF" opacity="0.45" class="s2"/>
+    <circle cx="700" cy="20" r="1.1" fill="#F4F7FF" opacity="0.6" class="s3"/>
+    <circle cx="640" cy="50" r="0.8" fill="#F4F7FF" opacity="0.4" class="s2"/>
+    <circle cx="730" cy="46" r="1.0" fill="#F4F7FF" opacity="0.55" class="s3"/>
+    <circle cx="586" cy="48" r="0.6" fill="#F4F7FF" opacity="0.35"/>
+    <circle cx="716" cy="12" r="1.6" fill="#39E0FF" opacity="0.4" class="s2"/>
+  </g>
+
+  <!-- Orbiting-moon motif as the leading glyph, on its own 24s orbit ring -->
+  <g transform="translate(38,32)">
+    <ellipse cx="0" cy="0" rx="17" ry="9" fill="none" stroke="url(#sub__accentArc)" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+    <g filter="url(#sub__moonGlow)">
+      <circle cx="0" cy="0" r="9" fill="url(#sub__moonBody)">
+        <animateMotion dur="24s" repeatCount="indefinite" calcMode="linear"
+          path="M 0,-9 A 17,9 0 1 1 0,9 A 17,9 0 1 1 0,-9 Z"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- Typed phrases, masked by the reveal clip. Caret rides the right edge of the clip. -->
+  <g clip-path="url(#sub__reveal)">
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="600" letter-spacing="0.5">
+      <text class="phrase p1" x="74" y="40" fill="#E8ECF6" filter="url(#sub__glow)">149 tools over CDP</text>
+      <text class="phrase p2" x="74" y="40" fill="#E8ECF6" filter="url(#sub__glow)">Token-minimal by design</text>
+      <text class="phrase p3" x="74" y="40" fill="#E8ECF6" filter="url(#sub__glow)">Works with Claude Code and Codex</text>
+      <text class="phrase p4" x="74" y="40" fill="#E8ECF6" filter="url(#sub__glow)">Scene . Physics . Visual . Build</text>
+    </g>
+  </g>
+
+  <!-- Neon-cyan caret: a thin bar that follows the typing edge via the same keyTimes -->
+  <rect class="caret" y="22" width="2.5" height="22" rx="1" fill="#39E0FF" filter="url(#sub__glow)">
+    <animate attributeName="x" dur="24s" repeatCount="indefinite" calcMode="spline"
+      keyTimes="0; 0.0667; 0.1917; 0.2333; 0.25; 0.3167; 0.4417; 0.4833; 0.5; 0.5667; 0.6917; 0.7333; 0.75; 0.8167; 0.9417; 0.9833; 1"
+      values="76;634;634;76;76;634;634;76;76;634;634;76;76;634;634;76;76"
+      keySplines="0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"/>
+  </rect>
+</svg>

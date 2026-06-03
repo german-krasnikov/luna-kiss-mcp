@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1200 340" width="1200" height="340" role="img"
+     aria-labelledby="hero__title hero__desc">
+  <title id="hero__title">Luna MCP — AI-native debugger for Luna playable builds</title>
+  <desc id="hero__desc">A deep-space control-room banner: twinkling starfield, an orbiting moon with telemetry particles tracing an elliptical orbit, and the title Luna MCP with a cyan-to-violet gradient sweep.</desc>
+
+  <defs>
+    <!-- Shared gradients, re-declared locally with exact hexes, namespaced with hero__ -->
+    <linearGradient id="hero__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+
+    <linearGradient id="hero__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+
+    <!-- Wide travelling version of the accent arc for the animated title sweep -->
+    <linearGradient id="hero__titleSweep" x1="0" y1="0" x2="1" y2="0"
+                    gradientUnits="userSpaceOnUse" x="0" y="0">
+      <stop offset="0.00" stop-color="#39E0FF"/>
+      <stop offset="0.25" stop-color="#6AB6FF"/>
+      <stop offset="0.50" stop-color="#8B7DFF"/>
+      <stop offset="0.75" stop-color="#6AB6FF"/>
+      <stop offset="1.00" stop-color="#39E0FF"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+                        from="-560 0" to="560 0" dur="6s"
+                        calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1"
+                        repeatCount="indefinite"/>
+    </linearGradient>
+
+    <radialGradient id="hero__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+
+    <radialGradient id="hero__moonHalo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#A9B6D9" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#8B7DFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#05060B" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="hero__vignette" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#0E1120" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#05060B" stop-opacity="0.9"/>
+    </radialGradient>
+
+    <!-- Canonical soft-glow recipe -->
+    <filter id="hero__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="hero__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="hero__glowMoon" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Elliptical orbit path shared by satellites -->
+    <path id="hero__orbitPath"
+          d="M 940 170 a 250 96 0 1 0 -500 0 a 250 96 0 1 0 500 0" fill="none"/>
+
+    <style>
+      .twinkle { animation: hero__tw 2.4s ease-in-out infinite; }
+      .twinkle.d1 { animation-delay: 0.3s; }
+      .twinkle.d2 { animation-delay: 0.7s; }
+      .twinkle.d3 { animation-delay: 1.1s; }
+      .twinkle.d4 { animation-delay: 1.5s; }
+      .twinkle.d5 { animation-delay: 1.9s; }
+      .beacon  { animation: hero__beacon 2.4s ease-in-out infinite; }
+      .moonPulse { animation: hero__moonPulse 3s ease-in-out infinite; }
+      .drift { animation: hero__drift 40s linear infinite; }
+
+      @keyframes hero__tw {
+        0%, 100% { opacity: 0.30; } 50% { opacity: 0.85; }
+      }
+      @keyframes hero__beacon {
+        0%, 100% { opacity: 0.25; } 50% { opacity: 0.70; }
+      }
+      @keyframes hero__moonPulse {
+        0%, 100% { opacity: 0.85; } 50% { opacity: 1; }
+      }
+      @keyframes hero__drift {
+        0% { transform: translateX(0); } 50% { transform: translateX(8px); } 100% { transform: translateX(0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * { animation: none !important; }
+      }
+    </style>
+  </defs>
+
+  <!-- Canvas -->
+  <rect x="0" y="0" width="1200" height="340" rx="16" fill="url(#hero__skyGrad)"/>
+
+  <!-- Starfield: ~95 stars, scattered, twinkle via opacity only -->
+  <g fill="#F4F7FF">
+    <circle class="twinkle d1" cx="38"  cy="44"  r="0.9" opacity="0.5"/>
+    <circle class="twinkle d3" cx="71"  cy="262" r="1.1" opacity="0.6"/>
+    <circle class="twinkle"    cx="96"  cy="120" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d2" cx="120" cy="300" r="1.0" opacity="0.55"/>
+    <circle class="twinkle d4" cx="142" cy="70"  r="0.8" opacity="0.45"/>
+    <circle class="twinkle d5" cx="168" cy="200" r="1.2" opacity="0.7"/>
+    <circle class="twinkle d1" cx="190" cy="38"  r="0.6" opacity="0.35"/>
+    <circle class="twinkle d3" cx="214" cy="150" r="0.9" opacity="0.5"/>
+    <circle class="twinkle"    cx="236" cy="284" r="1.0" opacity="0.6"/>
+    <circle class="twinkle d2" cx="260" cy="96"  r="0.7" opacity="0.45"/>
+    <circle class="twinkle d5" cx="284" cy="230" r="1.1" opacity="0.65"/>
+    <circle class="twinkle d4" cx="312" cy="56"  r="0.8" opacity="0.4"/>
+    <circle class="twinkle d1" cx="334" cy="312" r="0.9" opacity="0.55"/>
+    <circle class="twinkle d3" cx="360" cy="180" r="0.6" opacity="0.35"/>
+    <circle class="twinkle"    cx="388" cy="108" r="1.0" opacity="0.6"/>
+    <circle class="twinkle d2" cx="414" cy="268" r="0.8" opacity="0.5"/>
+    <circle class="twinkle d4" cx="440" cy="40"  r="1.1" opacity="0.6"/>
+    <circle class="twinkle d5" cx="466" cy="214" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="492" cy="132" r="0.9" opacity="0.55"/>
+    <circle class="twinkle d3" cx="520" cy="296" r="1.0" opacity="0.6"/>
+    <circle class="twinkle"    cx="548" cy="62"  r="0.6" opacity="0.35"/>
+    <circle class="twinkle d2" cx="576" cy="248" r="0.8" opacity="0.5"/>
+    <circle class="twinkle d4" cx="604" cy="100" r="1.1" opacity="0.65"/>
+    <circle class="twinkle d5" cx="632" cy="306" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="660" cy="46"  r="0.9" opacity="0.55"/>
+    <circle class="twinkle d3" cx="688" cy="190" r="1.0" opacity="0.6"/>
+    <circle class="twinkle"    cx="716" cy="280" r="0.6" opacity="0.35"/>
+    <circle class="twinkle d2" cx="744" cy="84"  r="0.8" opacity="0.5"/>
+    <circle class="twinkle d4" cx="772" cy="234" r="1.1" opacity="0.6"/>
+    <circle class="twinkle d5" cx="800" cy="52"  r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="828" cy="160" r="0.9" opacity="0.55"/>
+    <circle class="twinkle d3" cx="856" cy="300" r="1.0" opacity="0.6"/>
+    <circle class="twinkle"    cx="884" cy="74"  r="0.6" opacity="0.35"/>
+    <circle class="twinkle d2" cx="912" cy="220" r="0.8" opacity="0.5"/>
+    <circle class="twinkle d4" cx="940" cy="44"  r="1.1" opacity="0.6"/>
+    <circle class="twinkle d5" cx="968" cy="288" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="996" cy="118" r="0.9" opacity="0.55"/>
+    <circle class="twinkle d3" cx="1022" cy="250" r="1.0" opacity="0.6"/>
+    <circle class="twinkle"    cx="1048" cy="60"  r="0.6" opacity="0.35"/>
+    <circle class="twinkle d2" cx="1074" cy="196" r="0.8" opacity="0.5"/>
+    <circle class="twinkle d4" cx="1100" cy="308" r="1.1" opacity="0.6"/>
+    <circle class="twinkle d5" cx="1124" cy="86"  r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="1150" cy="240" r="0.9" opacity="0.55"/>
+    <circle class="twinkle d3" cx="1172" cy="130" r="1.0" opacity="0.6"/>
+    <circle class="twinkle"    cx="26"  cy="186" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d2" cx="54"  cy="96"  r="0.9" opacity="0.5"/>
+    <circle class="twinkle d4" cx="108" cy="226" r="0.8" opacity="0.45"/>
+    <circle class="twinkle d5" cx="156" cy="296" r="0.6" opacity="0.35"/>
+    <circle class="twinkle d1" cx="204" cy="78"  r="1.0" opacity="0.55"/>
+    <circle class="twinkle d3" cx="252" cy="166" r="0.7" opacity="0.4"/>
+    <circle class="twinkle"    cx="300" cy="246" r="0.9" opacity="0.5"/>
+    <circle class="twinkle d2" cx="348" cy="92"  r="0.8" opacity="0.45"/>
+    <circle class="twinkle d4" cx="396" cy="320" r="0.6" opacity="0.35"/>
+    <circle class="twinkle d5" cx="444" cy="156" r="1.0" opacity="0.55"/>
+    <circle class="twinkle d1" cx="500" cy="78"  r="0.7" opacity="0.4"/>
+    <circle class="twinkle d3" cx="556" cy="208" r="0.9" opacity="0.5"/>
+    <circle class="twinkle"    cx="612" cy="296" r="0.8" opacity="0.45"/>
+    <circle class="twinkle d2" cx="668" cy="118" r="0.6" opacity="0.35"/>
+    <circle class="twinkle d4" cx="724" cy="200" r="1.0" opacity="0.55"/>
+    <circle class="twinkle d5" cx="780" cy="316" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="836" cy="118" r="0.9" opacity="0.5"/>
+    <circle class="twinkle d3" cx="892" cy="266" r="0.8" opacity="0.45"/>
+    <circle class="twinkle"    cx="948" cy="96"  r="0.6" opacity="0.35"/>
+    <circle class="twinkle d2" cx="1004" cy="216" r="1.0" opacity="0.55"/>
+    <circle class="twinkle d4" cx="1060" cy="120" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d5" cx="1116" cy="170" r="0.9" opacity="0.5"/>
+    <circle class="twinkle d1" cx="1162" cy="300" r="0.8" opacity="0.45"/>
+    <circle class="twinkle d3" cx="14"  cy="280" r="0.6" opacity="0.35"/>
+    <circle class="twinkle"    cx="62"  cy="320" r="0.9" opacity="0.5"/>
+    <circle class="twinkle d2" cx="178" cy="124" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d4" cx="270" cy="40"  r="0.8" opacity="0.45"/>
+    <circle class="twinkle d5" cx="382" cy="232" r="0.6" opacity="0.35"/>
+    <circle class="twinkle d1" cx="528" cy="40"  r="0.9" opacity="0.5"/>
+    <circle class="twinkle d3" cx="640" cy="160" r="0.7" opacity="0.4"/>
+    <circle class="twinkle"    cx="752" cy="44"  r="0.8" opacity="0.45"/>
+    <circle class="twinkle d2" cx="864" cy="40"  r="0.6" opacity="0.35"/>
+    <circle class="twinkle d4" cx="976" cy="170" r="0.9" opacity="0.5"/>
+    <circle class="twinkle d5" cx="1088" cy="260" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d1" cx="1140" cy="48"  r="0.8" opacity="0.45"/>
+    <circle class="twinkle d3" cx="430" cy="118" r="0.6" opacity="0.35"/>
+    <circle class="twinkle"    cx="586" cy="124" r="0.9" opacity="0.5"/>
+    <circle class="twinkle d2" cx="700" cy="252" r="0.7" opacity="0.4"/>
+    <circle class="twinkle d4" cx="818" cy="208" r="0.8" opacity="0.45"/>
+    <circle class="twinkle d5" cx="930" cy="128" r="0.6" opacity="0.35"/>
+    <circle class="twinkle d1" cx="1042" cy="300" r="0.9" opacity="0.5"/>
+  </g>
+
+  <!-- Beacon stars (cyan, low opacity) -->
+  <g fill="#39E0FF" filter="url(#hero__glowFine)">
+    <circle class="beacon"    cx="232" cy="92"  r="1.6"/>
+    <circle class="beacon d2" cx="556" cy="276" r="1.6"/>
+    <circle class="beacon d4" cx="1018" cy="84" r="1.6"/>
+    <circle class="beacon d1" cx="772" cy="300" r="1.6"/>
+  </g>
+
+  <!-- ===== Orbiting-moon motif (right-of-center cluster) ===== -->
+  <g class="drift">
+    <!-- moon halo -->
+    <circle cx="690" cy="170" r="120" fill="url(#hero__moonHalo)" filter="url(#hero__glowMoon)"/>
+
+    <!-- orbit ring (elliptical), accent arc at ~0.5 opacity, 3px -->
+    <ellipse cx="690" cy="170" rx="250" ry="96"
+             fill="none" stroke="url(#hero__accentArc)" stroke-width="3"
+             stroke-linecap="round" opacity="0.5"/>
+
+    <!-- moon sphere -->
+    <g class="moonPulse" filter="url(#hero__glowMoon)">
+      <circle cx="690" cy="170" r="62" fill="url(#hero__moonBody)"/>
+      <!-- subtle craters in shadowed limb -->
+      <circle cx="712" cy="156" r="9"  fill="#10131F" opacity="0.30"/>
+      <circle cx="722" cy="192" r="6"  fill="#10131F" opacity="0.28"/>
+      <circle cx="698" cy="200" r="4"  fill="#10131F" opacity="0.24"/>
+      <circle cx="676" cy="146" r="5"  fill="#3A4360" opacity="0.35"/>
+    </g>
+
+    <!-- Telemetry particles riding the elliptical orbit -->
+    <g fill="#39E0FF" filter="url(#hero__glow)">
+      <circle r="4">
+        <animateMotion dur="24s" rotate="auto" repeatCount="indefinite"
+                       keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+          <mpath xlink:href="#hero__orbitPath"/>
+        </animateMotion>
+      </circle>
+    </g>
+    <g fill="#8B7DFF" filter="url(#hero__glow)">
+      <circle r="3.2">
+        <animateMotion dur="24s" rotate="auto" repeatCount="indefinite"
+                       keyPoints="0.4;1.4" keyTimes="0;1" calcMode="linear">
+          <mpath xlink:href="#hero__orbitPath"/>
+        </animateMotion>
+      </circle>
+    </g>
+    <g fill="#6AB6FF" filter="url(#hero__glowFine)">
+      <circle r="2.6">
+        <animateMotion dur="24s" rotate="auto" repeatCount="indefinite"
+                       keyPoints="0.72;1.72" keyTimes="0;1" calcMode="linear">
+          <mpath xlink:href="#hero__orbitPath"/>
+        </animateMotion>
+      </circle>
+    </g>
+  </g>
+
+  <!-- ===== Title block ===== -->
+  <g text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <!-- Eyebrow / status chip -->
+    <g transform="translate(600,72)">
+      <rect x="-118" y="-15" width="236" height="30" rx="15"
+            fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <circle cx="-96" cy="0" r="3.2" fill="#3FE0A3" filter="url(#hero__glowFine)"/>
+      <text x="6" y="4.5" fill="#C2C9DD" font-size="12.5" letter-spacing="3.2"
+            font-weight="600">AI-NATIVE CDP DEBUGGER</text>
+    </g>
+
+    <!-- Title with animated gradient sweep -->
+    <text x="600" y="186" font-size="104" font-weight="800" letter-spacing="1"
+          fill="url(#hero__titleSweep)" filter="url(#hero__glow)">Luna MCP</text>
+
+    <!-- Subtitle -->
+    <text x="600" y="232" fill="#E8ECF6" font-size="22" font-weight="500"
+          letter-spacing="0.4">Debug Luna playables straight from your AI assistant</text>
+
+    <!-- Caption line -->
+    <text x="600" y="262" fill="#7E879F" font-size="14" letter-spacing="0.6"
+          font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">AI Assistant  ·  stdio  ·  MCP  ·  CDP WebSocket  ·  Chrome (Luna build)</text>
+  </g>
+
+  <!-- Stat chips -->
+  <g text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+    <g transform="translate(456,298)">
+      <rect x="-66" y="-14" width="132" height="28" rx="14" fill="#151A2E" stroke="#222742" stroke-width="1"/>
+      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#39E0FF" font-weight="700">149</tspan><tspan fill="#C2C9DD"> tools</tspan></text>
+    </g>
+    <g transform="translate(600,298)">
+      <rect x="-72" y="-14" width="144" height="28" rx="14" fill="#151A2E" stroke="#222742" stroke-width="1"/>
+      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#3FE0A3" font-weight="700">up to 92%</tspan><tspan fill="#C2C9DD"> fewer tokens</tspan></text>
+    </g>
+    <g transform="translate(744,298)">
+      <rect x="-66" y="-14" width="132" height="28" rx="14" fill="#151A2E" stroke="#222742" stroke-width="1"/>
+      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#8B7DFF" font-weight="700">1936</tspan><tspan fill="#C2C9DD"> tests</tspan></text>
+    </g>
+  </g>
+
+  <!-- Vignette to deepen edges -->
+  <rect x="0" y="0" width="1200" height="340" rx="16" fill="url(#hero__vignette)" pointer-events="none"/>
+  <!-- Hairline frame -->
+  <rect x="0.5" y="0.5" width="1199" height="339" rx="16" fill="none" stroke="#222742" stroke-width="1"/>
+</svg>

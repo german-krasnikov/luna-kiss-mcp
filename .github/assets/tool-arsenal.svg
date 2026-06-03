@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 260" role="img" aria-labelledby="tarsTitle tarsDesc">
+  <title id="tarsTitle">Luna MCP Tool Arsenal — 149 tools orbiting a lunar core</title>
+  <desc id="tarsDesc">A dark deep-space banner. A lit silver moon sits at the centre with the count 149 tools. Cyan and violet telemetry rings orbit it, labelled with tool categories. A still starfield twinkles behind.</desc>
+
+  <defs>
+    <linearGradient id="tars__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+    <linearGradient id="tars__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <radialGradient id="tars__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+    <filter id="tars__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tars__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tars__halo" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <style>
+      .tw { animation: tars__twinkle 2.4s ease-in-out infinite; }
+      .tw2 { animation: tars__twinkle 2.4s ease-in-out infinite; animation-delay: 1.1s; }
+      .sweep { stroke-dasharray: 10 14; animation: tars__dash 3s cubic-bezier(0.4,0,0.2,1) infinite; }
+      @keyframes tars__twinkle { 0%,100%{opacity:.30} 50%{opacity:.85} }
+      @keyframes tars__dash { to { stroke-dashoffset: -48; } }
+      @media (prefers-reduced-motion: reduce){ * { animation: none !important; } }
+    </style>
+  </defs>
+
+  <rect width="1200" height="260" rx="16" fill="url(#tars__skyGrad)"/>
+  <rect x="0.5" y="0.5" width="1199" height="259" rx="16" fill="none" stroke="#222742" stroke-width="1"/>
+
+  <!-- starfield -->
+  <g fill="#F4F7FF">
+    <circle class="tw"  cx="70"  cy="44"  r="1.0" opacity=".5"/>
+    <circle class="tw2" cx="150" cy="92"  r="0.8" opacity=".4"/>
+    <circle class="tw"  cx="232" cy="36"  r="1.2" opacity=".6"/>
+    <circle class="tw2" cx="318" cy="160" r="0.7" opacity=".35"/>
+    <circle class="tw"  cx="404" cy="58"  r="0.9" opacity=".55"/>
+    <circle class="tw2" cx="486" cy="210" r="1.0" opacity=".45"/>
+    <circle class="tw"  cx="560" cy="40"  r="0.7" opacity=".4"/>
+    <circle class="tw2" cx="648" cy="120" r="0.8" opacity=".5"/>
+    <circle class="tw"  cx="742" cy="206" r="1.1" opacity=".5"/>
+    <circle class="tw2" cx="828" cy="50"  r="0.9" opacity=".45"/>
+    <circle class="tw"  cx="906" cy="180" r="0.8" opacity=".4"/>
+    <circle class="tw2" cx="980" cy="70"  r="1.0" opacity=".55"/>
+    <circle class="tw"  cx="1058" cy="150" r="0.7" opacity=".4"/>
+    <circle class="tw2" cx="1130" cy="46"  r="1.2" opacity=".6"/>
+    <circle class="tw"  cx="1162" cy="200" r="0.8" opacity=".45"/>
+    <circle class="tw2" cx="40"  cy="190" r="0.9" opacity=".4"/>
+    <circle class="tw"  cx="1100" cy="100" r="0.8" opacity=".5"/>
+    <circle class="tw2" cx="370" cy="100" r="0.7" opacity=".35"/>
+  </g>
+  <g fill="#39E0FF">
+    <circle class="tw"  cx="200" cy="200" r="1.6" opacity=".5"/>
+    <circle class="tw2" cx="1000" cy="40" r="1.6" opacity=".45"/>
+    <circle class="tw"  cx="700" cy="70"  r="1.6" opacity=".5"/>
+  </g>
+
+  <!-- orbit rings around the lunar core -->
+  <g transform="translate(600 130)">
+    <ellipse cx="0" cy="0" rx="300" ry="78" fill="none" stroke="url(#tars__accentArc)" stroke-width="3"
+             opacity="0.5" filter="url(#tars__glow)"/>
+    <ellipse class="sweep" cx="0" cy="0" rx="300" ry="78" fill="none" stroke="#39E0FF" stroke-width="2"
+             stroke-linecap="round" opacity="0.7"/>
+    <ellipse cx="0" cy="0" rx="430" ry="108" fill="none" stroke="#222742" stroke-width="1" opacity="0.8"/>
+
+    <!-- moon core -->
+    <g filter="url(#tars__halo)">
+      <circle cx="0" cy="0" r="52" fill="url(#tars__moonBody)"/>
+    </g>
+    <circle cx="0" cy="0" r="52" fill="none" stroke="#A9B6D9" stroke-width="1" opacity="0.6"/>
+    <text x="0" y="-2" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif"
+          font-size="30" font-weight="700" fill="#05060B">149</text>
+    <text x="0" y="20" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="11" letter-spacing="2" fill="#10131F">TOOLS</text>
+
+    <!-- orbiting category nodes -->
+    <g filter="url(#tars__glowFine)">
+      <circle cx="-300" cy="0"  r="4" fill="#39E0FF"/>
+      <circle cx="300"  cy="0"  r="4" fill="#8B7DFF"/>
+      <circle cx="-150" cy="-67" r="3.5" fill="#39E0FF"/>
+      <circle cx="150"  cy="-67" r="3.5" fill="#8B7DFF"/>
+      <circle cx="-150" cy="67"  r="3.5" fill="#8B7DFF"/>
+      <circle cx="150"  cy="67"  r="3.5" fill="#39E0FF"/>
+    </g>
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" fill="#C2C9DD">
+      <text x="-300" y="-14" text-anchor="middle">scene</text>
+      <text x="300"  y="-14" text-anchor="middle">cdp</text>
+      <text x="-150" y="-78" text-anchor="middle">visual</text>
+      <text x="150"  y="-78" text-anchor="middle">physics</text>
+      <text x="-150" y="88"  text-anchor="middle">build</text>
+      <text x="150"  y="88"  text-anchor="middle">macros</text>
+    </g>
+  </g>
+
+  <!-- caption strip -->
+  <text x="600" y="244" text-anchor="middle" filter="url(#tars__glowFine)"
+        font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" letter-spacing="1.5"
+        fill="#39E0FF">112 AI-EXPOSED  ·  37 BATCH-ONLY  ·  ONE ROUND-TRIP</text>
+</svg>

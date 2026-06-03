@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 140" width="1200" height="140" role="img" aria-labelledby="ftw__title ftw__desc" preserveAspectRatio="xMidYMid slice">
+  <title id="ftw__title">Luna MCP — footer telemetry wave</title>
+  <desc id="ftw__desc">A calm cyan-to-violet wave drifting across a deep-space horizon, with rising telemetry particles, a still starfield, and a small orbiting moon.</desc>
+
+  <defs>
+    <!-- shared gradient: luna-hero-sky -->
+    <linearGradient id="ftw__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+
+    <!-- shared gradient: luna-accent-arc (cyan -> blue -> violet) -->
+    <linearGradient id="ftw__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+
+    <!-- shared gradient: luna-success-bar (green -> cyan) for the front savings wave -->
+    <linearGradient id="ftw__successBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3FE0A3"/>
+      <stop offset="100%" stop-color="#39E0FF"/>
+    </linearGradient>
+
+    <!-- shared gradient: luna-moon-body -->
+    <radialGradient id="ftw__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+
+    <!-- vertical fade so waves dissolve into the sky at their crest -->
+    <linearGradient id="ftw__waveFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="38%" stop-color="#ffffff" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="ftw__waveMaskBack">
+      <rect x="0" y="40" width="1200" height="100" fill="url(#ftw__waveFade)"/>
+    </mask>
+    <mask id="ftw__waveMaskFront">
+      <rect x="0" y="60" width="1200" height="80" fill="url(#ftw__waveFade)"/>
+    </mask>
+
+    <!-- canonical soft glow -->
+    <filter id="ftw__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="ftw__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="ftw__glowHalo" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- two stacked wave cycles so a -600 shift loops seamlessly (period = 600) -->
+    <path id="ftw__waveBack" d="M0,80
+      C 100,62 200,62 300,80 C 400,98 500,98 600,80
+      C 700,62 800,62 900,80 C 1000,98 1100,98 1200,80
+      C 1300,62 1400,62 1500,80 C 1600,98 1700,98 1800,80
+      L 1800,140 L 0,140 Z"/>
+    <path id="ftw__waveFront" d="M0,92
+      C 90,108 180,108 300,92 C 420,76 510,76 600,92
+      C 690,108 780,108 900,92 C 1020,76 1110,76 1200,92
+      C 1290,108 1380,108 1500,92 C 1620,76 1710,76 1800,92
+      L 1800,140 L 0,140 Z"/>
+  </defs>
+
+  <style>
+    /* twinkle only — stars never move */
+    .ftw-tw { animation: ftw-twinkle 2.4s ease-in-out infinite; }
+    .ftw-tw2 { animation: ftw-twinkle 2.4s ease-in-out infinite; animation-delay: -1.1s; }
+    @keyframes ftw-twinkle {
+      0%, 100% { opacity: 0.30; }
+      50%      { opacity: 0.85; }
+    }
+    /* rising telemetry particles */
+    .ftw-rise { animation: ftw-rise 6s linear infinite; }
+    @keyframes ftw-rise {
+      0%   { transform: translateY(0) scale(1);   opacity: 0; }
+      12%  { opacity: 0.9; }
+      85%  { opacity: 0.55; }
+      100% { transform: translateY(-78px) scale(0.4); opacity: 0; }
+    }
+    /* gentle accent-line breathing */
+    .ftw-breathe { animation: ftw-breathe 3s ease-in-out infinite; }
+    @keyframes ftw-breathe {
+      0%, 100% { opacity: 0.45; }
+      50%      { opacity: 0.9; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+
+  <!-- canvas -->
+  <rect x="0" y="0" width="1200" height="140" fill="url(#ftw__skyGrad)"/>
+
+  <!-- starfield (static positions, twinkle only) -->
+  <g fill="#F4F7FF">
+    <circle class="ftw-tw"  cx="58"   cy="22" r="0.9" opacity="0.6"/>
+    <circle class="ftw-tw2" cx="132"  cy="40" r="1.2" opacity="0.5"/>
+    <circle class="ftw-tw"  cx="205"  cy="16" r="0.7" opacity="0.7"/>
+    <circle class="ftw-tw2" cx="288"  cy="33" r="1.0" opacity="0.45"/>
+    <circle class="ftw-tw"  cx="360"  cy="20" r="0.8" opacity="0.65"/>
+    <circle class="ftw-tw2" cx="447"  cy="44" r="0.6" opacity="0.4"/>
+    <circle class="ftw-tw"  cx="520"  cy="14" r="1.1" opacity="0.55"/>
+    <circle class="ftw-tw2" cx="601"  cy="36" r="0.8" opacity="0.6"/>
+    <circle class="ftw-tw"  cx="676"  cy="22" r="0.7" opacity="0.5"/>
+    <circle class="ftw-tw2" cx="742"  cy="42" r="1.0" opacity="0.45"/>
+    <circle class="ftw-tw"  cx="828"  cy="18" r="0.9" opacity="0.7"/>
+    <circle class="ftw-tw2" cx="905"  cy="34" r="0.6" opacity="0.5"/>
+    <circle class="ftw-tw"  cx="980"  cy="24" r="1.2" opacity="0.55"/>
+    <circle class="ftw-tw2" cx="1052" cy="40" r="0.8" opacity="0.4"/>
+    <circle class="ftw-tw"  cx="1124" cy="16" r="0.7" opacity="0.65"/>
+    <circle class="ftw-tw2" cx="1168" cy="38" r="1.0" opacity="0.5"/>
+  </g>
+  <!-- cyan beacon stars -->
+  <g fill="#39E0FF">
+    <circle class="ftw-tw"  cx="240"  cy="50" r="1.6" opacity="0.35"/>
+    <circle class="ftw-tw2" cx="660"  cy="48" r="1.6" opacity="0.30"/>
+    <circle class="ftw-tw"  cx="1010" cy="52" r="1.6" opacity="0.35"/>
+  </g>
+
+  <!-- small orbiting moon motif, upper-right -->
+  <g transform="translate(1108,46)">
+    <ellipse cx="0" cy="0" rx="30" ry="11" fill="none"
+             stroke="url(#ftw__accentArc)" stroke-width="3"
+             stroke-linecap="round" opacity="0.5"/>
+    <g>
+      <circle r="6.5" fill="url(#ftw__moonBody)" filter="url(#ftw__glowHalo)">
+        <animateMotion dur="24s" repeatCount="indefinite" rotate="auto"
+          path="M30,0 A30,11 0 1,1 -30,0 A30,11 0 1,1 30,0"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- thin accent horizon line that the waves rise from -->
+  <line x1="0" y1="74" x2="1200" y2="74" stroke="url(#ftw__accentArc)"
+        stroke-width="1" opacity="0.25"/>
+
+  <!-- BACK wave: cyan-violet telemetry sweep, slow drift -->
+  <g mask="url(#ftw__waveMaskBack)" opacity="0.5">
+    <use href="#ftw__waveBack" fill="url(#ftw__accentArc)" filter="url(#ftw__glow)">
+      <animateTransform attributeName="transform" type="translate"
+        from="0,0" to="-600,0" dur="40s" repeatCount="indefinite"/>
+    </use>
+  </g>
+
+  <!-- FRONT wave: savings green-to-cyan, faster counter-drift -->
+  <g mask="url(#ftw__waveMaskFront)" opacity="0.85">
+    <use href="#ftw__waveFront" fill="url(#ftw__successBar)" filter="url(#ftw__glow)">
+      <animateTransform attributeName="transform" type="translate"
+        from="-600,0" to="0,0" dur="24s" repeatCount="indefinite"/>
+    </use>
+  </g>
+
+  <!-- crest accent stroke, breathing -->
+  <path class="ftw-breathe" d="M0,92 C 90,108 180,108 300,92 C 420,76 510,76 600,92
+        C 690,108 780,108 900,92 C 1020,76 1110,76 1200,92"
+        fill="none" stroke="#39E0FF" stroke-width="1.5"
+        stroke-linecap="round" filter="url(#ftw__glowFine)" opacity="0.6"/>
+
+  <!-- rising telemetry particles -->
+  <g filter="url(#ftw__glowFine)">
+    <g class="ftw-rise" style="transform-origin:center"><circle cx="160"  cy="120" r="1.4" fill="#39E0FF"/></g>
+    <g class="ftw-rise" style="animation-delay:-1.4s"><circle cx="330"  cy="124" r="1.1" fill="#8B7DFF"/></g>
+    <g class="ftw-rise" style="animation-delay:-2.8s"><circle cx="505"  cy="118" r="1.5" fill="#3FE0A3"/></g>
+    <g class="ftw-rise" style="animation-delay:-0.7s"><circle cx="690"  cy="122" r="1.2" fill="#39E0FF"/></g>
+    <g class="ftw-rise" style="animation-delay:-3.6s"><circle cx="860"  cy="120" r="1.3" fill="#8B7DFF"/></g>
+    <g class="ftw-rise" style="animation-delay:-2.0s"><circle cx="1020" cy="124" r="1.1" fill="#39E0FF"/></g>
+    <g class="ftw-rise" style="animation-delay:-4.5s"><circle cx="1150" cy="118" r="1.4" fill="#3FE0A3"/></g>
+  </g>
+
+</svg>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 44" width="920" height="44" role="img" aria-labelledby="div-title">
+  <title id="div-title">Animated section divider: a comet sweeps left to right along a glowing cyan-to-violet line over a still starfield</title>
+  <defs>
+    <linearGradient id="div__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <!-- Comet head: bright cyan core fading to transparent -->
+    <radialGradient id="div__cometHead" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F4F7FF"/>
+      <stop offset="35%" stop-color="#39E0FF"/>
+      <stop offset="100%" stop-color="#39E0FF" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Comet tail: a horizontal fade trailing behind the head -->
+    <linearGradient id="div__cometTail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#39E0FF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#8B7DFF" stop-opacity="0.85"/>
+    </linearGradient>
+    <!-- Soft mask so the line and glow taper at both ends instead of hard-cutting -->
+    <linearGradient id="div__edgeFade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="8%" stop-color="#FFFFFF"/>
+      <stop offset="92%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <mask id="div__lineMask">
+      <rect x="0" y="0" width="920" height="44" fill="url(#div__edgeFade)"/>
+    </mask>
+    <filter id="div__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="div__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* Twinkle on the static starfield — opacity only, stars never move */
+    .div-star { animation: div-twinkle 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .div-s2 { animation-delay: 0.6s; }
+    .div-s3 { animation-delay: 1.2s; }
+    .div-s4 { animation-delay: 1.8s; }
+    .div-beacon { animation: div-beacon-pulse 2.4s ease-in-out infinite; }
+    @keyframes div-twinkle {
+      0%, 100% { opacity: 0.30; }
+      50%      { opacity: 0.80; }
+    }
+    @keyframes div-beacon-pulse {
+      0%, 100% { opacity: 0.35; }
+      50%      { opacity: 0.75; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+
+  <!-- Transparent background: no rect fill, deep-space shows through README -->
+
+  <!-- Static starfield (small scatter, off-grid) -->
+  <g fill="#F4F7FF">
+    <circle class="div-star"      cx="70"  cy="11" r="0.9" opacity="0.45"/>
+    <circle class="div-star div-s3" cx="150" cy="33" r="0.7" opacity="0.35"/>
+    <circle class="div-star div-s2" cx="248" cy="9"  r="1.1" opacity="0.55"/>
+    <circle class="div-star div-s4" cx="330" cy="36" r="0.8" opacity="0.40"/>
+    <circle class="div-star"      cx="430" cy="7"  r="0.6" opacity="0.35"/>
+    <circle class="div-star div-s3" cx="512" cy="34" r="1.0" opacity="0.50"/>
+    <circle class="div-star div-s2" cx="604" cy="10" r="0.7" opacity="0.45"/>
+    <circle class="div-star div-s4" cx="690" cy="35" r="0.9" opacity="0.40"/>
+    <circle class="div-star"      cx="772" cy="8"  r="1.1" opacity="0.55"/>
+    <circle class="div-star div-s3" cx="850" cy="32" r="0.7" opacity="0.35"/>
+  </g>
+  <!-- Beacon stars (cyan, low opacity) -->
+  <g fill="#39E0FF">
+    <circle class="div-beacon"      cx="196" cy="14" r="1.6" opacity="0.55" filter="url(#div__glowFine)"/>
+    <circle class="div-beacon div-s3" cx="724" cy="30" r="1.6" opacity="0.55" filter="url(#div__glowFine)"/>
+  </g>
+
+  <!-- The glowing divider line, edge-faded via mask -->
+  <g mask="url(#div__lineMask)">
+    <line x1="0" y1="22" x2="920" y2="22" stroke="url(#div__accentArc)" stroke-width="2"
+          stroke-linecap="round" opacity="0.85" filter="url(#div__glow)"/>
+    <!-- faint hairline under-glow for depth -->
+    <line x1="0" y1="22" x2="920" y2="22" stroke="#222742" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Comet: tail + head, swept along the line by a single shared translate.
+       Group starts off-canvas left and exits off-canvas right, then loops seamlessly. -->
+  <g mask="url(#div__lineMask)">
+    <g>
+      <!-- tail trails to the LEFT of the head (head sits at local x=0) -->
+      <rect x="-120" y="20.4" width="120" height="3.2" rx="1.6" fill="url(#div__cometTail)" opacity="0.9"/>
+      <!-- glowing head -->
+      <circle cx="0" cy="22" r="6" fill="url(#div__cometHead)" filter="url(#div__glow)"/>
+      <circle cx="0" cy="22" r="2.1" fill="#F4F7FF"/>
+      <animateTransform attributeName="transform" type="translate"
+                        values="-140 0; 1060 0" dur="3s"
+                        calcMode="linear" repeatCount="indefinite"/>
+    </g>
+  </g>
+</svg>

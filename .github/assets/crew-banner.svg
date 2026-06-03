@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220" width="1200" height="220" role="img" aria-labelledby="crew-title crew-desc">
+  <title id="crew-title">Crew of Starship Luna — mission roster banner</title>
+  <desc id="crew-desc">A lunar observatory banner: an orbiting moon riding an elliptical ring over a still starfield, with the heading "The Crew".</desc>
+  <defs>
+    <linearGradient id="crew__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+    <linearGradient id="crew__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <radialGradient id="crew__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+    <filter id="crew__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="crew__glowAccent" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="crew__glowMoon" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .twinkle { animation: crew_tw 2.4s ease-in-out infinite; }
+    .twinkle.d1 { animation-delay: .4s; } .twinkle.d2 { animation-delay: .9s; }
+    .twinkle.d3 { animation-delay: 1.4s; } .twinkle.d4 { animation-delay: 1.9s; }
+    .sweep { animation: crew_sweep 3s cubic-bezier(0.4,0,0.2,1) infinite; }
+    @keyframes crew_tw { 0%,100% { opacity:.30; } 50% { opacity:.85; } }
+    @keyframes crew_sweep { 0% { stroke-dashoffset: 520; } 100% { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect x="0" y="0" width="1200" height="220" rx="16" fill="url(#crew__skyGrad)"/>
+  <rect x="0.5" y="0.5" width="1199" height="219" rx="16" fill="none" stroke="#222742" stroke-width="1"/>
+
+  <!-- starfield -->
+  <g fill="#F4F7FF">
+    <circle class="twinkle" cx="70" cy="38" r="1.0" opacity=".5"/>
+    <circle class="twinkle d2" cx="150" cy="80" r="0.8" opacity=".4"/>
+    <circle class="twinkle d1" cx="230" cy="40" r="1.2" opacity=".6"/>
+    <circle class="twinkle d3" cx="300" cy="150" r="0.7" opacity=".35"/>
+    <circle class="twinkle d4" cx="410" cy="60" r="1.0" opacity=".5"/>
+    <circle class="twinkle d1" cx="520" cy="120" r="0.9" opacity=".45"/>
+    <circle class="twinkle d2" cx="600" cy="34" r="1.1" opacity=".55"/>
+    <circle class="twinkle d4" cx="700" cy="170" r="0.7" opacity=".3"/>
+    <circle class="twinkle d3" cx="820" cy="50" r="1.0" opacity=".5"/>
+    <circle class="twinkle d1" cx="900" cy="110" r="0.8" opacity=".4"/>
+    <circle class="twinkle d2" cx="980" cy="46" r="1.2" opacity=".6"/>
+    <circle class="twinkle d4" cx="1060" cy="150" r="0.7" opacity=".35"/>
+    <circle class="twinkle d3" cx="1130" cy="70" r="1.0" opacity=".5"/>
+    <circle class="twinkle d1" cx="360" cy="100" r="0.6" opacity=".3"/>
+    <circle class="twinkle d2" cx="760" cy="90" r="0.8" opacity=".4"/>
+    <circle class="twinkle d3" cx="1010" cy="120" r="0.6" opacity=".3"/>
+  </g>
+  <g>
+    <circle class="twinkle d2" cx="250" cy="180" r="1.6" fill="#39E0FF" opacity=".4"/>
+    <circle class="twinkle d4" cx="950" cy="180" r="1.6" fill="#39E0FF" opacity=".4"/>
+  </g>
+
+  <!-- orbit ring + moon, left signature -->
+  <g transform="translate(160,110)">
+    <ellipse cx="0" cy="0" rx="92" ry="44" fill="none" stroke="url(#crew__accentArc)" stroke-width="3" opacity="0.5"
+             stroke-linecap="round"/>
+    <ellipse class="sweep" cx="0" cy="0" rx="92" ry="44" fill="none" stroke="url(#crew__accentArc)" stroke-width="2"
+             stroke-linecap="round" stroke-dasharray="120 400" opacity="0.9" filter="url(#crew__glowAccent)"/>
+    <!-- moon orbits the ring -->
+    <g filter="url(#crew__glowMoon)">
+      <circle r="20" fill="url(#crew__moonBody)">
+        <animateMotion dur="24s" repeatCount="indefinite" rotate="0"
+                       path="M 92,0 A 92,44 0 1,1 -92,0 A 92,44 0 1,1 92,0"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- heading -->
+  <g transform="translate(330,0)">
+    <text x="0" y="92" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="46" font-weight="700"
+          fill="#E8ECF6" filter="url(#crew__glowFine)" letter-spacing="1">THE CREW</text>
+    <text x="2" y="128" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16"
+          fill="#C2C9DD">Crew of Starship Luna — 1 human captain, 5 AI agents</text>
+    <text x="2" y="156" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13"
+          fill="#7E879F">architect → developer → reviewer → doc-keeper · TDD all the way down</text>
+  </g>
+</svg>

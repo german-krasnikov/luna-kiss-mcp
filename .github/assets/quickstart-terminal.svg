@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 320" width="780" height="320" role="img" aria-labelledby="qst-title qst-desc">
+  <title id="qst-title">Luna MCP Quickstart terminal</title>
+  <desc id="qst-desc">An animated terminal window typing the three quickstart commands: clone and install, launch Chrome with remote debugging, and ask the AI assistant to inspect the Luna scene hierarchy.</desc>
+
+  <defs>
+    <!-- Re-declared shared gradients, namespaced per-file -->
+    <linearGradient id="qst__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+    <linearGradient id="qst__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <radialGradient id="qst__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+
+    <!-- Canonical soft-glow recipe -->
+    <filter id="qst__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="qst__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="qst__glowMoon" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Clip so typed text stays inside the screen area -->
+    <clipPath id="qst__screenClip">
+      <rect x="24" y="76" width="732" height="220" rx="0"/>
+    </clipPath>
+  </defs>
+
+  <style>
+    .qst-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Each command line is masked by a clip rect that widens (reveal-typing).
+       We animate the width of an overlay panel that hides each line. */
+    .qst-reveal { animation: qst-type 1.6s steps(48, end) forwards; }
+
+    /* Reveal windows: a cover rect slides right to "type" text underneath. */
+    @keyframes qst-cover1 { 0%,0% { transform: translateX(0); } 6%,100% { transform: translateX(720px); } }
+    @keyframes qst-cover2 { 0%,30% { transform: translateX(0); } 36%,100% { transform: translateX(720px); } }
+    @keyframes qst-cover3 { 0%,58% { transform: translateX(0); } 64%,100% { transform: translateX(720px); } }
+    @keyframes qst-cover4 { 0%,80% { transform: translateX(0); } 86%,100% { transform: translateX(720px); } }
+
+    .qst-cover { fill: #0E1120; }
+    .qst-c1 { animation: qst-cover1 13s cubic-bezier(0.4,0,0.2,1) infinite; }
+    .qst-c2 { animation: qst-cover2 13s cubic-bezier(0.4,0,0.2,1) infinite; }
+    .qst-c3 { animation: qst-cover3 13s cubic-bezier(0.4,0,0.2,1) infinite; }
+    .qst-c4 { animation: qst-cover4 13s cubic-bezier(0.4,0,0.2,1) infinite; }
+
+    /* Caret blink + step-down position */
+    @keyframes qst-caret-blink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+    @keyframes qst-caret-pos {
+      0%,6%    { transform: translate(214px, 0); }
+      8%,30%   { transform: translate(560px, 0); }
+      36%,36%  { transform: translate(40px, 26px); }
+      38%,58%  { transform: translate(556px, 26px); }
+      64%,64%  { transform: translate(40px, 52px); }
+      66%,80%  { transform: translate(540px, 52px); }
+      86%,86%  { transform: translate(40px, 96px); }
+      88%,100% { transform: translate(360px, 96px); }
+    }
+    .qst-caretGroup { animation: qst-caret-pos 13s cubic-bezier(0.4,0,0.2,1) infinite; }
+    .qst-caret { animation: qst-caret-blink 1.06s steps(1,end) infinite; }
+
+    /* Starfield twinkle */
+    @keyframes qst-tw { 0%,100% { opacity: .3; } 50% { opacity: .8; } }
+    .qst-star { animation: qst-tw 2.4s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+      .qst-cover { display: none; }
+      .qst-caret { opacity: 0; }
+    }
+  </style>
+
+  <!-- Full-bleed deep-space canvas -->
+  <rect x="0" y="0" width="780" height="320" fill="url(#qst__skyGrad)"/>
+
+  <!-- Starfield (twinkle, never moves) -->
+  <g fill="#F4F7FF">
+    <circle class="qst-star" cx="60" cy="40" r="1.0" style="animation-delay:.1s"/>
+    <circle class="qst-star" cx="140" cy="22" r="0.8" style="animation-delay:.7s"/>
+    <circle class="qst-star" cx="700" cy="30" r="1.2" style="animation-delay:1.3s"/>
+    <circle class="qst-star" cx="640" cy="56" r="0.7" style="animation-delay:.4s"/>
+    <circle class="qst-star" cx="40" cy="290" r="0.9" style="animation-delay:1.9s"/>
+    <circle class="qst-star" cx="120" cy="300" r="0.7" style="animation-delay:.9s"/>
+    <circle class="qst-star" cx="745" cy="270" r="1.1" style="animation-delay:1.5s"/>
+    <circle class="qst-star" cx="720" cy="300" r="0.8" style="animation-delay:.3s"/>
+    <circle class="qst-star" cx="20" cy="160" r="0.7" style="animation-delay:2.1s"/>
+    <circle class="qst-star" cx="765" cy="150" r="0.9" style="animation-delay:1.1s"/>
+  </g>
+  <g fill="#39E0FF">
+    <circle class="qst-star" cx="690" cy="44" r="1.6" opacity="0.5" style="animation-delay:.6s"/>
+    <circle class="qst-star" cx="48" cy="58" r="1.6" opacity="0.4" style="animation-delay:1.6s"/>
+  </g>
+
+  <!-- Orbiting-moon signature glyph, upper-right -->
+  <g transform="translate(706,52)">
+    <ellipse cx="0" cy="0" rx="34" ry="14" fill="none" stroke="url(#qst__accentArc)" stroke-width="3" stroke-linecap="round" opacity="0.5" transform="rotate(-18)"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/>
+      <circle cx="34" cy="0" r="7" fill="url(#qst__moonBody)" filter="url(#qst__glowMoon)"/>
+    </g>
+  </g>
+
+  <!-- ===================== TERMINAL WINDOW ===================== -->
+  <g transform="translate(24,40)">
+    <!-- Window frame -->
+    <rect x="0" y="0" width="732" height="256" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+    <!-- Title bar -->
+    <rect x="0" y="0" width="732" height="36" rx="10" fill="#151A2E"/>
+    <rect x="0" y="22" width="732" height="14" fill="#151A2E"/>
+    <line x1="0" y1="36" x2="732" y2="36" stroke="#222742" stroke-width="1"/>
+
+    <!-- Traffic lights -->
+    <circle cx="20" cy="18" r="5.5" fill="#FF5C7A"/>
+    <circle cx="40" cy="18" r="5.5" fill="#FFC24B"/>
+    <circle cx="60" cy="18" r="5.5" fill="#3FE0A3"/>
+
+    <!-- Title -->
+    <text x="366" y="22" text-anchor="middle" class="qst-mono" font-size="12" fill="#7E879F">luna-mcp — quickstart</text>
+
+    <!-- Accent underline sweep on the title bar -->
+    <rect x="0" y="35" width="732" height="1.5" fill="url(#qst__accentArc)" opacity="0.55"/>
+  </g>
+
+  <!-- Screen content (clipped) -->
+  <g clip-path="url(#qst__screenClip)" class="qst-mono" font-size="13">
+    <g transform="translate(40,98)">
+      <!-- Line 1: clone -->
+      <g>
+        <text x="0" y="0" fill="#566079">$</text>
+        <text x="16" y="0" fill="#39E0FF" filter="url(#qst__glowFine)">git clone https://github.com/german-krasnikov/luna-kiss-mcp</text>
+        <rect class="qst-cover qst-c1" x="14" y="-12" width="720" height="18"/>
+      </g>
+
+      <!-- Line 2: cd + install -->
+      <g transform="translate(0,26)">
+        <text x="0" y="0" fill="#566079">$</text>
+        <text x="16" y="0" fill="#E8ECF6">cd luna-kiss-mcp/server </text>
+        <text x="208" y="0" fill="#566079">&amp;&amp;</text>
+        <text x="234" y="0" fill="#39E0FF">pip install -e ".[dev]"</text>
+        <rect class="qst-cover qst-c2" x="14" y="-12" width="720" height="18"/>
+      </g>
+
+      <!-- Line 3: launch chrome -->
+      <g transform="translate(0,52)">
+        <text x="0" y="0" fill="#566079">$</text>
+        <text x="16" y="0" fill="#8B7DFF">google-chrome \</text>
+        <rect class="qst-cover qst-c3" x="14" y="-12" width="720" height="18"/>
+      </g>
+      <g transform="translate(0,70)">
+        <text x="28" y="0" fill="#C2C9DD">--remote-debugging-port=9222 \</text>
+      </g>
+      <g transform="translate(0,86)">
+        <text x="28" y="0" fill="#C2C9DD">--user-data-dir=/tmp/luna-debug-profile</text>
+      </g>
+      <!-- cover for the two wrapped flag lines, revealed with line 3 -->
+      <rect class="qst-cover qst-c3" x="0" y="58" width="720" height="40"/>
+
+      <!-- Output line -->
+      <g transform="translate(0,108)">
+        <text x="0" y="0" fill="#3FE0A3">▸ CDP ready on :9222 — open your Luna build URL</text>
+        <rect class="qst-cover qst-c3" x="0" y="-12" width="720" height="18"/>
+      </g>
+
+      <!-- Line 4: the natural-language ask -->
+      <g transform="translate(0,144)">
+        <text x="0" y="0" fill="#566079">›</text>
+        <text x="16" y="0" fill="#E8ECF6" filter="url(#qst__glowFine)">Inspect the Luna scene hierarchy</text>
+        <rect class="qst-cover qst-c4" x="14" y="-12" width="720" height="18"/>
+      </g>
+      <g transform="translate(0,168)">
+        <text x="0" y="0" class="qst-mono" font-size="11.5" fill="#7E879F">↳ luna-mcp · get_hierarchy → 1 round-trip · plain-text, token-minimal</text>
+        <rect class="qst-cover qst-c4" x="-2" y="-11" width="720" height="16"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- Blinking caret (rides the typed lines) -->
+  <g class="qst-caretGroup">
+    <g class="qst-caret" transform="translate(40,98)">
+      <rect x="0" y="-11" width="7" height="14" fill="#39E0FF" filter="url(#qst__glowFine)"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560" role="img" aria-labelledby="tl-title tl-desc">
+  <title id="tl-title">Luna MCP release flight path</title>
+  <desc id="tl-desc">An animated orbital release timeline: Phase A+B+C, then Waves 1 to 6, then Sprints 1 to 6, with a moon traveling the path as telemetry sweeps along a cyan-to-violet line.</desc>
+  <defs>
+    <linearGradient id="tl__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+    <linearGradient id="tl__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <linearGradient id="tl__successBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3FE0A3"/>
+      <stop offset="100%" stop-color="#39E0FF"/>
+    </linearGradient>
+    <radialGradient id="tl__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+    <filter id="tl__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tl__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tl__halo" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <path id="tl__flight" d="M 120 430 C 320 430 360 150 560 150 S 840 430 1080 200" fill="none"/>
+  </defs>
+
+  <style>
+    @keyframes tl_twinkle { 0%,100% { opacity:.30 } 50% { opacity:.85 } }
+    @keyframes tl_pulse   { 0%,100% { opacity:.55; r:5 } 50% { opacity:1; r:7 } }
+    @keyframes tl_dash    { to { stroke-dashoffset: -360 } }
+    .tl_star  { animation: tl_twinkle 2.4s cubic-bezier(.4,0,.2,1) infinite }
+    .tl_node  { animation: tl_pulse 2.4s cubic-bezier(.4,0,.2,1) infinite }
+    .tl_sweep { stroke-dasharray: 14 346; animation: tl_dash 3s linear infinite }
+    @media (prefers-reduced-motion: reduce){ * { animation: none !important } }
+  </style>
+
+  <rect width="1200" height="560" rx="16" fill="url(#tl__skyGrad)"/>
+  <rect x="1" y="1" width="1198" height="558" rx="16" fill="none" stroke="#222742" stroke-width="1"/>
+
+  <!-- starfield -->
+  <g fill="#F4F7FF">
+    <circle class="tl_star" cx="80"  cy="70"  r="1.0" style="animation-delay:.1s"/>
+    <circle class="tl_star" cx="200" cy="120" r="0.8" style="animation-delay:.7s"/>
+    <circle class="tl_star" cx="330" cy="60"  r="1.2" style="animation-delay:1.3s"/>
+    <circle class="tl_star" cx="470" cy="100" r="0.7" style="animation-delay:.4s"/>
+    <circle class="tl_star" cx="610" cy="55"  r="1.1" style="animation-delay:1.9s"/>
+    <circle class="tl_star" cx="760" cy="110" r="0.9" style="animation-delay:.9s"/>
+    <circle class="tl_star" cx="900" cy="68"  r="1.3" style="animation-delay:1.5s"/>
+    <circle class="tl_star" cx="1040" cy="120" r="0.8" style="animation-delay:.2s"/>
+    <circle class="tl_star" cx="1130" cy="60"  r="1.0" style="animation-delay:1.1s"/>
+    <circle class="tl_star" cx="150" cy="480" r="0.9" style="animation-delay:.6s"/>
+    <circle class="tl_star" cx="280" cy="510" r="1.1" style="animation-delay:1.7s"/>
+    <circle class="tl_star" cx="540" cy="490" r="0.7" style="animation-delay:.3s"/>
+    <circle class="tl_star" cx="700" cy="515" r="1.2" style="animation-delay:1.2s"/>
+    <circle class="tl_star" cx="980" cy="500" r="0.8" style="animation-delay:.8s"/>
+    <circle class="tl_star" cx="1100" cy="470" r="1.0" style="animation-delay:1.6s"/>
+    <circle class="tl_star" cx="60"  cy="300" r="0.7" style="animation-delay:.5s"/>
+    <circle class="tl_star" cx="1150" cy="320" r="0.9" style="animation-delay:1.4s"/>
+  </g>
+  <g fill="#39E0FF">
+    <circle class="tl_star" cx="420" cy="40"  r="1.6" style="animation-delay:.9s" opacity=".5"/>
+    <circle class="tl_star" cx="850" cy="500" r="1.6" style="animation-delay:1.8s" opacity=".5"/>
+    <circle class="tl_star" cx="1080" cy="420" r="1.6" style="animation-delay:.4s" opacity=".5"/>
+  </g>
+
+  <!-- title -->
+  <text x="40" y="48" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#E8ECF6" filter="url(#tl__glowFine)">Release flight path</text>
+  <text x="40" y="72" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" fill="#7E879F">Phase A+B+C  →  Waves 1–6  →  Sprints 1–6</text>
+
+  <!-- flight line: base + telemetry sweep -->
+  <use href="#tl__flight" stroke="#222742" stroke-width="3" stroke-linecap="round"/>
+  <use href="#tl__flight" stroke="url(#tl__accentArc)" stroke-width="2" stroke-linecap="round" opacity=".85" filter="url(#tl__glow)"/>
+  <use href="#tl__flight" class="tl_sweep" stroke="#39E0FF" stroke-width="2.5" stroke-linecap="round" filter="url(#tl__glow)"/>
+
+  <!-- milestone nodes -->
+  <!-- Phase A+B+C @ start of curve -->
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <circle class="tl_node" cx="120" cy="430" r="6" fill="#8B7DFF" filter="url(#tl__glow)" style="animation-delay:0s"/>
+    <text x="120" y="468" text-anchor="middle" font-size="13" font-weight="700" fill="#E8ECF6">Phase A+B+C</text>
+    <text x="120" y="486" text-anchor="middle" font-size="11" fill="#7E879F">refactor · audit</text>
+
+    <circle class="tl_node" cx="380" cy="262" r="6" fill="#39E0FF" filter="url(#tl__glow)" style="animation-delay:.4s"/>
+    <text x="380" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#E8ECF6">Waves 1–6</text>
+    <text x="380" y="214" text-anchor="middle" font-size="11" fill="#7E879F">EventBus · Lessons · Physics · F11–F20</text>
+
+    <circle class="tl_node" cx="560" cy="150" r="6" fill="#39E0FF" filter="url(#tl__glow)" style="animation-delay:.8s"/>
+    <text x="560" y="120" text-anchor="middle" font-size="13" font-weight="700" fill="#E8ECF6">Token Economy</text>
+    <text x="560" y="102" text-anchor="middle" font-size="11" fill="#3FE0A3">up to 92% saved</text>
+
+    <circle class="tl_node" cx="800" cy="300" r="6" fill="#39E0FF" filter="url(#tl__glow)" style="animation-delay:1.2s"/>
+    <text x="800" y="338" text-anchor="middle" font-size="13" font-weight="700" fill="#E8ECF6">Sprints 1–6</text>
+    <text x="800" y="356" text-anchor="middle" font-size="11" fill="#7E879F">CDP domains · linter · CI</text>
+
+    <circle class="tl_node" cx="1080" cy="200" r="7" fill="#3FE0A3" filter="url(#tl__halo)" style="animation-delay:1.6s"/>
+    <text x="1080" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#E8ECF6">v0.1.0 · Beta</text>
+    <text x="1080" y="152" text-anchor="middle" font-size="11" fill="#7E879F">149 tools · 1936 tests</text>
+  </g>
+
+  <!-- traveling moon on the flight path -->
+  <g filter="url(#tl__halo)">
+    <circle r="11" fill="url(#tl__moonBody)" stroke="url(#tl__accentArc)" stroke-width="1.5" opacity=".95">
+      <animateMotion dur="24s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+        <mpath href="#tl__flight"/>
+      </animateMotion>
+    </circle>
+  </g>
+</svg>

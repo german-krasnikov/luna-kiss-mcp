@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="760" height="420" role="img" aria-labelledby="astk__title astk__desc">
+  <title id="astk__title">The 6-layer composition stack every tool call descends through: Recorder, Hinter, Degradation, Budget gate, Reflect, and Schema guard.</title>
+  <desc id="astk__desc">Six stacked control-room rails, outermost first. A cyan-to-violet pulse descends through the rails to the live CDP call, then the schema-guarded result returns.</desc>
+
+  <defs>
+    <linearGradient id="astk__skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#05060B"/>
+      <stop offset="55%" stop-color="#080A14"/>
+      <stop offset="100%" stop-color="#0E1120"/>
+    </linearGradient>
+    <linearGradient id="astk__accentArc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#39E0FF"/>
+      <stop offset="50%" stop-color="#6AB6FF"/>
+      <stop offset="100%" stop-color="#8B7DFF"/>
+    </linearGradient>
+    <radialGradient id="astk__moonBody" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E8ECF6"/>
+      <stop offset="42%" stop-color="#A9B6D9"/>
+      <stop offset="78%" stop-color="#3A4360"/>
+      <stop offset="100%" stop-color="#10131F"/>
+    </radialGradient>
+    <filter id="astk__glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="astk__glowFine" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .lbl  { font-family: "Segoe UI", Helvetica, Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .tw   { animation: astk__tw 2.4s ease-in-out infinite; }
+    .tw.b { animation-delay: 1.2s; }
+    @keyframes astk__tw { 0%,100% { opacity:.3 } 50% { opacity:.8 } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect width="760" height="420" fill="url(#astk__skyGrad)"/>
+
+  <!-- starfield -->
+  <g fill="#F4F7FF">
+    <circle class="tw"   cx="60"  cy="40"  r="1.0" opacity=".6"/>
+    <circle class="tw b" cx="700" cy="60"  r="1.2" opacity=".7"/>
+    <circle class="tw"   cx="640" cy="380" r="0.8" opacity=".45"/>
+    <circle class="tw b" cx="90"  cy="370" r="0.9" opacity=".5"/>
+    <circle class="tw"   cx="720" cy="220" r="0.7" opacity=".4"/>
+    <circle class="tw b" cx="40"  cy="210" r="0.8" opacity=".45"/>
+  </g>
+  <circle class="tw" cx="710" cy="120" r="1.6" fill="#39E0FF" opacity=".4"/>
+
+  <!-- vertical spine the pulse travels -->
+  <line x1="120" y1="70" x2="120" y2="350" stroke="#222742" stroke-width="2" stroke-linecap="round"/>
+  <!-- descending pulse -->
+  <circle cx="120" r="5" fill="#39E0FF" filter="url(#astk__glow)">
+    <animate attributeName="cy" values="70;350" dur="3s" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1" repeatCount="indefinite"/>
+    <animate attributeName="fill" values="#39E0FF;#8B7DFF" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- layer rows -->
+  <g class="lbl">
+    <!-- row template: number chip + bar + name + role -->
+    <!-- 1 Recorder -->
+    <g>
+      <circle cx="120" cy="78" r="6" fill="url(#astk__moonBody)" filter="url(#astk__glowFine)"/>
+      <rect x="150" y="62" width="560" height="32" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <text x="166" y="82" class="mono" font-size="12" fill="#39E0FF">1</text>
+      <text x="190" y="82" class="lbl" font-size="14" font-weight="bold" fill="#E8ECF6">Recorder</text>
+      <text x="700" y="82" text-anchor="end" class="lbl" font-size="11.5" fill="#7E879F">captures request / response (JSONL, redacted)</text>
+    </g>
+    <!-- 2 Hinter -->
+    <g>
+      <circle cx="120" cy="124" r="6" fill="url(#astk__moonBody)" filter="url(#astk__glowFine)"/>
+      <rect x="150" y="108" width="560" height="32" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <text x="166" y="128" class="mono" font-size="12" fill="#39E0FF">2</text>
+      <text x="190" y="128" class="lbl" font-size="14" font-weight="bold" fill="#E8ECF6">Hinter</text>
+      <text x="700" y="128" text-anchor="end" class="lbl" font-size="11.5" fill="#7E879F">spots anti-patterns · injects typemap lessons</text>
+    </g>
+    <!-- 3 Degradation -->
+    <g>
+      <circle cx="120" cy="170" r="6" fill="url(#astk__moonBody)" filter="url(#astk__glowFine)"/>
+      <rect x="150" y="154" width="560" height="32" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <text x="166" y="174" class="mono" font-size="12" fill="#6AB6FF">3</text>
+      <text x="190" y="174" class="lbl" font-size="14" font-weight="bold" fill="#E8ECF6">Degradation</text>
+      <text x="700" y="174" text-anchor="end" class="lbl" font-size="11.5" fill="#7E879F">graceful fallback (Chrome down · typemap missing)</text>
+    </g>
+    <!-- 4 Budget gate -->
+    <g>
+      <circle cx="120" cy="216" r="6" fill="url(#astk__moonBody)" filter="url(#astk__glowFine)"/>
+      <rect x="150" y="200" width="560" height="32" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <text x="166" y="220" class="mono" font-size="12" fill="#6AB6FF">4</text>
+      <text x="190" y="220" class="lbl" font-size="14" font-weight="bold" fill="#E8ECF6">Budget gate</text>
+      <text x="700" y="220" text-anchor="end" class="lbl" font-size="11.5" fill="#7E879F">run · downgrade · skip by token cost</text>
+    </g>
+    <!-- 5 Reflect -->
+    <g>
+      <circle cx="120" cy="262" r="6" fill="url(#astk__moonBody)" filter="url(#astk__glowFine)"/>
+      <rect x="150" y="246" width="560" height="32" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <text x="166" y="266" class="mono" font-size="12" fill="#8B7DFF">5</text>
+      <text x="190" y="266" class="lbl" font-size="14" font-weight="bold" fill="#E8ECF6">Reflect</text>
+      <text x="700" y="266" text-anchor="end" class="lbl" font-size="11.5" fill="#7E879F">reads back mutations (saves 5–15k tokens)</text>
+    </g>
+    <!-- 6 Schema guard -->
+    <g>
+      <circle cx="120" cy="308" r="6" fill="url(#astk__moonBody)" filter="url(#astk__glowFine)"/>
+      <rect x="150" y="292" width="560" height="32" rx="10" fill="#0E1120" stroke="#222742" stroke-width="1"/>
+      <text x="166" y="312" class="mono" font-size="12" fill="#8B7DFF">6</text>
+      <text x="190" y="312" class="lbl" font-size="14" font-weight="bold" fill="#E8ECF6">Schema guard</text>
+      <text x="700" y="312" text-anchor="end" class="lbl" font-size="11.5" fill="#7E879F">pre-flight validation · typo &amp; semantic checks</text>
+    </g>
+  </g>
+
+  <!-- live CDP call target -->
+  <g>
+    <rect x="150" y="340" width="560" height="34" rx="10" fill="#151A2E" stroke="url(#astk__accentArc)" stroke-width="2" opacity=".9"/>
+    <circle cx="120" cy="357" r="6" fill="#3FE0A3" filter="url(#astk__glowFine)"/>
+    <text x="430" y="362" text-anchor="middle" class="mono" font-size="12.5" fill="#39E0FF" filter="url(#astk__glowFine)">live CDP eval → Chrome (Luna iframe)</text>
+  </g>
+
+  <!-- header -->
+  <text x="40" y="44" class="lbl" font-size="13" font-weight="bold" fill="#C2C9DD" letter-spacing="1.5">COMPOSITION STACK · outermost → innermost</text>
+</svg>
