@@ -1131,8 +1131,12 @@ python3 -m luna_mcp.cli.ci \
 </div>
 
 <div align="center">
-  <img src="./.github/assets/timeline.svg" width="900" alt="Animated release timeline — milestones from Phase A+B+C through Waves 1-6, Token Economy, Sprints 1-6, to v0.1.0 Beta scrolling along a glowing flight path." />
+  <img src="./.github/assets/changelog.svg" width="900" alt="Animated release timeline — five milestones revealed in sequence along a glowing vertical spine as a marker descends: Phase A+B+C (foundation), Waves 1-6 (intelligence), Token Economy (up to 92% saved), Sprints 1-6 (field-ready), and v0.1.0 Beta (149 tools, 1936 tests, ~23,779 LOC)." />
 </div>
+
+<details>
+<summary><sub>Read the log as text</sub></summary>
+<br/>
 
 <table>
 <thead>
@@ -1176,6 +1180,8 @@ python3 -m luna_mcp.cli.ci \
 
 </tbody>
 </table>
+
+</details>
 
 <div align="center">
 <sub>Full reverse-chronological detail lives in <a href="./CHANGELOG.md"><b>CHANGELOG.md</b></a> · <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a> format.</sub>

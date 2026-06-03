@@ -42,6 +42,11 @@ into the Luna iframe and re-injected on reconnect.
 
 ### Documentation
 
+- Replaced the plain-text Flight Log milestone table with a self-contained
+  animated release-timeline SVG (`.github/assets/changelog.svg`): the five
+  milestones reveal in sequence along a glowing vertical spine as a marker
+  descends. Visible-at-rest and theme-safe (works on light and dark); the
+  text table is preserved in a collapsed panel for accessibility.
 - Redesigned the README into a sectioned animated landing page: hero banner,
   Token Economy, Philosophy, Capabilities, First Steps, Demo, Architecture,
   Tool Arsenal, The Crew, Ecosystem, and a Flight Log release timeline.

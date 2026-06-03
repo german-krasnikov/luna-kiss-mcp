@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 960" width="900" height="960" role="img" aria-labelledby="cl-title cl-desc">
+<title id="cl-title">Luna MCP — Release Timeline</title>
+<desc id="cl-desc">An animated vertical changelog. Five milestones reveal in sequence top to bottom as a marker descends a glowing gradient spine: Phase A+B+C (Foundation), Waves 1-6 (The brain), Token Economy (up to 92% saved), Sprints 1-6 (Probes and field-readiness), and v0.1.0 Beta (Touchdown) with 149 tools, 1936 tests, and 23,779 LOC.</desc>
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0.65" y2="1"><stop offset="0" stop-color="#05060B"/><stop offset="0.5" stop-color="#080A14"/><stop offset="1" stop-color="#0E1120"/></linearGradient>
+<linearGradient id="spine" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B7DFF"/><stop offset="0.32" stop-color="#6AB6FF"/><stop offset="0.58" stop-color="#39E0FF"/><stop offset="1" stop-color="#3FE0A3"/></linearGradient>
+<linearGradient id="bv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8B7DFF"/><stop offset="1" stop-color="#6AB6FF"/></linearGradient>
+<linearGradient id="bc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#39E0FF"/><stop offset="1" stop-color="#6AB6FF"/></linearGradient>
+<linearGradient id="bgr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3FE0A3"/><stop offset="1" stop-color="#39E0FF"/></linearGradient>
+<linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12172B"/><stop offset="1" stop-color="#0B0E1C"/></linearGradient>
+<linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9FD4FF" stop-opacity="0"/><stop offset="0.5" stop-color="#9FD4FF" stop-opacity="0.5"/><stop offset="1" stop-color="#9FD4FF" stop-opacity="0"/></linearGradient>
+<radialGradient id="halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#3FE0A3" stop-opacity="0.85"/><stop offset="1" stop-color="#3FE0A3" stop-opacity="0"/></radialGradient>
+<filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+<feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<clipPath id="c1"><rect x="0" y="0" width="700" height="92" rx="12"/></clipPath>
+<clipPath id="c2"><rect x="0" y="0" width="700" height="92" rx="12"/></clipPath>
+<clipPath id="c3"><rect x="0" y="0" width="700" height="92" rx="12"/></clipPath>
+<clipPath id="c4"><rect x="0" y="0" width="700" height="92" rx="12"/></clipPath>
+<clipPath id="c5"><rect x="0" y="0" width="700" height="106" rx="12"/></clipPath>
+<style>
+.hd{font-family:"Segoe UI",Helvetica,Arial,sans-serif}
+.mn{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.tw{animation:tw 3.4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){* { animation:none !important }}
+</style>
+</defs>
+<rect x="0.5" y="0.5" width="899" height="959" rx="16" fill="url(#sky)" stroke="#222742" stroke-width="1"/>
+<g fill="#6AB6FF">
+<circle class="tw" cx="660" cy="80" r="1.3" style="animation-delay:.2s"/>
+<circle class="tw" cx="785" cy="170" r="1" style="animation-delay:1.1s"/>
+<circle class="tw" cx="848" cy="300" r="1.4" style="animation-delay:.6s"/>
+<circle class="tw" cx="720" cy="420" r="1" style="animation-delay:1.8s"/>
+<circle class="tw" cx="838" cy="540" r="1.2" style="animation-delay:.9s"/>
+<circle class="tw" cx="690" cy="660" r="1" style="animation-delay:2.3s"/>
+<circle class="tw" cx="820" cy="770" r="1.3" style="animation-delay:1.5s"/>
+<circle class="tw" cx="120" cy="120" r="1" style="animation-delay:2.7s"/>
+<circle class="tw" cx="58" cy="600" r="1.1" style="animation-delay:.4s"/>
+<circle class="tw" cx="855" cy="860" r="1.2" style="animation-delay:1.3s"/>
+</g>
+<text x="40" y="54" class="hd" font-size="27" font-weight="700" fill="#E8ECF6">Luna MCP <tspan class="mn" font-size="13" font-weight="400" fill="#7E879F">&#183; release timeline</tspan></text>
+<text x="40" y="76" class="mn" font-size="12.5" fill="#7E879F">Unity&#8594;JS transpiler debug bridge over CDP &#183; oldest &#8594; newest</text>
+<text x="860" y="54" class="mn" font-size="12.5" fill="#3FE0A3" text-anchor="end">5 milestones</text>
+<line x1="40" y1="92" x2="860" y2="92" stroke="#222742" stroke-width="1"/>
+<line x1="86" y1="130" x2="86" y2="892" stroke="#222742" stroke-width="4" stroke-linecap="round"/>
+<line x1="86" y1="130" x2="86" y2="892" stroke="url(#spine)" stroke-width="3" stroke-linecap="round" filter="url(#glow)" stroke-dasharray="762" stroke-dashoffset="762">
+<animate attributeName="stroke-dashoffset" from="762" to="0" begin="0.2s" dur="4.4s" fill="freeze"/>
+</line>
+<g filter="url(#glow)">
+<polygon points="86,-9 92,5 86,1.5 80,5" fill="#E8ECF6">
+<animateMotion path="M86,130 L86,892" begin="0.2s" dur="4.4s" rotate="auto" fill="freeze"/>
+</polygon>
+<circle cx="86" cy="0" r="2.6" fill="#39E0FF">
+<animateMotion path="M86,130 L86,892" begin="0.2s" dur="4.4s" fill="freeze"/>
+</circle>
+</g>
+<g>
+<circle cx="86" cy="178" r="13" fill="#8B7DFF" opacity="0.16"/>
+<circle cx="86" cy="178" r="6.5" fill="#0E1120" stroke="#8B7DFF" stroke-width="2.2"/>
+<circle cx="86" cy="178" r="3" fill="#8B7DFF"><animate attributeName="r" values="3;5;3" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
+<line x1="99" y1="178" x2="150" y2="178" stroke="#8B7DFF" stroke-width="1.4" opacity="0.6"/>
+<g transform="translate(178,132)">
+<animateTransform attributeName="transform" type="translate" from="178,132" to="150,132" begin="0.55s" dur="0.55s" fill="freeze"/>
+<rect x="0" y="0" width="700" height="92" rx="12" fill="url(#card)" stroke="#222742"/>
+<rect x="0" y="0" width="3.5" height="92" rx="1.75" fill="url(#bv)"/>
+<rect x="-220" y="0" width="220" height="92" fill="url(#sweep)" clip-path="url(#c1)" opacity="0.5">
+<animate attributeName="x" from="-220" to="700" begin="1.1s" dur="1.1s" fill="freeze"/>
+</rect>
+<text x="22" y="31" class="hd" font-size="17.5" font-weight="700" fill="#E8ECF6">Phase A+B+C</text>
+<text x="688" y="31" class="hd" font-size="17" font-weight="700" fill="#8B7DFF" text-anchor="end">Foundation.</text>
+<rect x="160" y="18" width="92" height="20" rx="10" fill="#8B7DFF" fill-opacity="0.15" stroke="#8B7DFF" stroke-opacity="0.5"/>
+<text x="206" y="32" class="mn" font-size="11" fill="#8B7DFF" text-anchor="middle">foundation</text>
+<text x="22" y="56" class="mn" font-size="12" fill="#C7CEE0">CDP bridge (auto-reconnect), JS helper injection into the Luna iframe,</text>
+<text x="22" y="76" class="mn" font-size="12" fill="#7E879F">JS&#8594;C# source mapping, Playworks typemap &#183; SOLID/DRY/KISS/TDD, files &lt; 200 lines.</text>
+</g>
+</g>
+<g>
+<circle cx="86" cy="324" r="13" fill="#39E0FF" opacity="0.16"/>
+<circle cx="86" cy="324" r="6.5" fill="#0E1120" stroke="#39E0FF" stroke-width="2.2"/>
+<circle cx="86" cy="324" r="3" fill="#39E0FF"><animate attributeName="r" values="3;5;3" dur="3s" begin="1.6s" repeatCount="indefinite"/></circle>
+<line x1="99" y1="324" x2="150" y2="324" stroke="#39E0FF" stroke-width="1.4" opacity="0.6"/>
+<g transform="translate(178,278)">
+<animateTransform attributeName="transform" type="translate" from="178,278" to="150,278" begin="1.25s" dur="0.55s" fill="freeze"/>
+<rect x="0" y="0" width="700" height="92" rx="12" fill="url(#card)" stroke="#222742"/>
+<rect x="0" y="0" width="3.5" height="92" rx="1.75" fill="url(#bc)"/>
+<rect x="-220" y="0" width="220" height="92" fill="url(#sweep)" clip-path="url(#c2)" opacity="0.5">
+<animate attributeName="x" from="-220" to="700" begin="1.8s" dur="1.1s" fill="freeze"/>
+</rect>
+<text x="22" y="31" class="hd" font-size="17.5" font-weight="700" fill="#E8ECF6">Waves 1-6</text>
+<text x="688" y="31" class="hd" font-size="17" font-weight="700" fill="#39E0FF" text-anchor="end">The brain.</text>
+<rect x="138" y="18" width="98" height="20" rx="10" fill="#39E0FF" fill-opacity="0.14" stroke="#39E0FF" stroke-opacity="0.5"/>
+<text x="187" y="32" class="mn" font-size="11" fill="#39E0FF" text-anchor="middle">intelligence</text>
+<text x="22" y="56" class="mn" font-size="12" fill="#C7CEE0">EventBus, Templates, Visual Regression v2, LessonStore, Speculator, Watchdog,</text>
+<text x="22" y="76" class="mn" font-size="12" fill="#7E879F">Macros, Budget Auto-tune, Physics (Goblin/Verlet/Baked/Unified), F11-F20.</text>
+</g>
+</g>
+<g>
+<circle cx="86" cy="470" r="13" fill="#3FE0A3" opacity="0.16"/>
+<circle cx="86" cy="470" r="6.5" fill="#0E1120" stroke="#3FE0A3" stroke-width="2.2"/>
+<circle cx="86" cy="470" r="3" fill="#3FE0A3"><animate attributeName="r" values="3;5;3" dur="3s" begin="2.2s" repeatCount="indefinite"/></circle>
+<line x1="99" y1="470" x2="150" y2="470" stroke="#3FE0A3" stroke-width="1.4" opacity="0.6"/>
+<g transform="translate(178,424)">
+<animateTransform attributeName="transform" type="translate" from="178,424" to="150,424" begin="1.95s" dur="0.55s" fill="freeze"/>
+<rect x="0" y="0" width="700" height="92" rx="12" fill="url(#card)" stroke="#222742"/>
+<rect x="0" y="0" width="3.5" height="92" rx="1.75" fill="url(#bgr)"/>
+<rect x="-220" y="0" width="220" height="92" fill="url(#sweep)" clip-path="url(#c3)" opacity="0.5">
+<animate attributeName="x" from="-220" to="700" begin="2.5s" dur="1.1s" fill="freeze"/>
+</rect>
+<text x="22" y="31" class="hd" font-size="17.5" font-weight="700" fill="#E8ECF6">Token Economy</text>
+<text x="688" y="31" class="hd" font-size="16" font-weight="700" fill="#3FE0A3" text-anchor="end">The soul of the project.</text>
+<rect x="170" y="18" width="120" height="20" rx="10" fill="#3FE0A3" fill-opacity="0.16" stroke="#3FE0A3" stroke-opacity="0.6"/>
+<text x="230" y="32" class="mn" font-size="11" font-weight="700" fill="#3FE0A3" text-anchor="middle">up to 92% saved</text>
+<text x="22" y="56" class="mn" font-size="12" fill="#C7CEE0">batch = one round-trip (80%+), Visual Tier 1 text-not-PNG (30-100x), JPEG (3-5x),</text>
+<text x="22" y="76" class="mn" font-size="12" fill="#7E879F">Set-of-Mark (70-90%), Cost Budget Router, plain-text, Haiku sampling.</text>
+</g>
+</g>
+<g>
+<circle cx="86" cy="616" r="13" fill="#6AB6FF" opacity="0.16"/>
+<circle cx="86" cy="616" r="6.5" fill="#0E1120" stroke="#6AB6FF" stroke-width="2.2"/>
+<circle cx="86" cy="616" r="3" fill="#6AB6FF"><animate attributeName="r" values="3;5;3" dur="3s" begin="2.8s" repeatCount="indefinite"/></circle>
+<line x1="99" y1="616" x2="150" y2="616" stroke="#6AB6FF" stroke-width="1.4" opacity="0.6"/>
+<g transform="translate(178,570)">
+<animateTransform attributeName="transform" type="translate" from="178,570" to="150,570" begin="2.65s" dur="0.55s" fill="freeze"/>
+<rect x="0" y="0" width="700" height="92" rx="12" fill="url(#card)" stroke="#222742"/>
+<rect x="0" y="0" width="3.5" height="92" rx="1.75" fill="url(#bc)"/>
+<rect x="-220" y="0" width="220" height="92" fill="url(#sweep)" clip-path="url(#c4)" opacity="0.5">
+<animate attributeName="x" from="-220" to="700" begin="3.2s" dur="1.1s" fill="freeze"/>
+</rect>
+<text x="22" y="31" class="hd" font-size="17.5" font-weight="700" fill="#E8ECF6">Sprints 1-6</text>
+<text x="688" y="31" class="hd" font-size="16" font-weight="700" fill="#6AB6FF" text-anchor="end">Probes &amp; field-readiness.</text>
+<rect x="142" y="18" width="86" height="20" rx="10" fill="#6AB6FF" fill-opacity="0.14" stroke="#6AB6FF" stroke-opacity="0.5"/>
+<text x="185" y="32" class="mn" font-size="11" fill="#6AB6FF" text-anchor="middle">field ready</text>
+<text x="22" y="56" class="mn" font-size="12" fill="#C7CEE0">Native perf probes, animator/INSIGHTS/tween, gestures + physics forensics,</text>
+<text x="22" y="76" class="mn" font-size="12" fill="#7E879F">CDP emulation/network/heap/trace/coverage, C# linter, CI (JUnit XML), GPU/VRAM.</text>
+</g>
+</g>
+<g>
+<circle cx="86" cy="788" r="32" fill="url(#halo)">
+<animate attributeName="r" values="24;36;24" dur="2.4s" begin="3.9s" repeatCount="indefinite"/>
+<animate attributeName="opacity" values="0.55;0.95;0.55" dur="2.4s" begin="3.9s" repeatCount="indefinite"/>
+</circle>
+<circle cx="86" cy="788" r="8.5" fill="#0E1120" stroke="#3FE0A3" stroke-width="2.6" filter="url(#glow)"/>
+<circle cx="86" cy="788" r="3.6" fill="#3FE0A3"><animate attributeName="r" values="3.6;6;3.6" dur="2.4s" begin="3.9s" repeatCount="indefinite"/></circle>
+<line x1="99" y1="788" x2="150" y2="788" stroke="#3FE0A3" stroke-width="1.6" opacity="0.7"/>
+<g transform="translate(178,735)">
+<animateTransform attributeName="transform" type="translate" from="178,735" to="150,735" begin="3.35s" dur="0.55s" fill="freeze"/>
+<rect x="0" y="0" width="700" height="106" rx="12" fill="url(#card)" stroke="#3FE0A3" stroke-opacity="0.45"/>
+<rect x="0" y="0" width="3.5" height="106" rx="1.75" fill="url(#bgr)"/>
+<rect x="-240" y="0" width="240" height="106" fill="url(#sweep)" clip-path="url(#c5)" opacity="0.55">
+<animate attributeName="x" from="-240" to="700" begin="3.9s" dur="1.2s" fill="freeze"/>
+</rect>
+<text x="22" y="32" class="hd" font-size="19" font-weight="700" fill="#3FE0A3">v0.1.0 &#8212; Beta</text>
+<text x="688" y="32" class="hd" font-size="18" font-weight="700" fill="#3FE0A3" text-anchor="end">Touchdown.</text>
+<rect x="178" y="18" width="100" height="20" rx="10" fill="#3FE0A3" fill-opacity="0.18" stroke="#3FE0A3" stroke-opacity="0.7"/>
+<text x="228" y="32" class="mn" font-size="11" font-weight="700" fill="#3FE0A3" text-anchor="middle">v0.1.0 &#183; MIT</text>
+<g class="mn">
+<text x="22" y="70" font-size="22" font-weight="700" fill="#E8ECF6">149</text>
+<text x="22" y="88" font-size="10.5" fill="#7E879F">tools 112 AI + 37</text>
+<text x="170" y="70" font-size="22" font-weight="700" fill="#39E0FF">1936</text>
+<text x="170" y="88" font-size="10.5" fill="#7E879F">tests / 147 files</text>
+<text x="320" y="70" font-size="22" font-weight="700" fill="#6AB6FF">23,779</text>
+<text x="320" y="88" font-size="10.5" fill="#7E879F">lines of code</text>
+<text x="492" y="70" font-size="18" font-weight="700" fill="#8B7DFF">3.10-3.13</text>
+<text x="492" y="88" font-size="10.5" fill="#7E879F">Python</text>
+<text x="678" y="70" font-size="15" font-weight="700" fill="#3FE0A3" text-anchor="end">v1.6.1</text>
+<text x="678" y="88" font-size="10.5" fill="#7E879F" text-anchor="end">luna_helpers.js</text>
+</g>
+</g>
+</g>
+<line x1="40" y1="916" x2="860" y2="916" stroke="#222742" stroke-width="1"/>
+<text x="40" y="940" class="mn" font-size="11" fill="#7E879F">each node ignites as the marker descends the spine &#183; token-minimal by design</text>
+<rect x="844" y="930" width="6" height="11" fill="#3FE0A3"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.4s" repeatCount="indefinite"/></rect>
+</svg>
