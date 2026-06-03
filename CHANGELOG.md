@@ -40,6 +40,26 @@ into the Luna iframe and re-injected on reconnect.
 - **Works with any stdio MCP client** — Claude Code, OpenAI Codex CLI, Cursor,
   Windsurf, and more.
 
+### Documentation
+
+- Redesigned the README into a sectioned animated landing page: hero banner,
+  Token Economy, Philosophy, Capabilities, First Steps, Demo, Architecture,
+  Tool Arsenal, The Crew, Ecosystem, and a Flight Log release timeline.
+- Added 16 self-contained animated SVG assets under `.github/assets` (hero,
+  dividers, token-savings, composition stack, architecture flow, terminal, crew,
+  ecosystem, timeline, footer).
+- Added a new Tool Arsenal section with a headline ten-tool table plus a full
+  catalog grouped by category (Scene, Visual, Physics, Build & Assets, Flags,
+  Performance, Diagnostics, Macros & Batch, CDP Domains) in collapsible panels.
+- Reorganized setup, per-client config (Claude Code / Codex CLI / others),
+  environment variables, and troubleshooting into collapsible sections while
+  preserving all prior content; added a three-step First Steps quickstart.
+- Added a Crew roster documenting the human captain and five model-backed AI
+  agents (senior-architect, senior-developer, code-reviewer, doc-keeper,
+  luna-debugger) with the pipeline flow.
+- Added a CHANGELOG.md in Keep a Changelog format and linked it from the README
+  release timeline.
+
 ---
 
 ## Sprints 1–6 - Probes, CDP domains, and CI
