@@ -140,43 +140,9 @@ def _replace_badge(text: str, label: str, new_val: str) -> str:
     )
 
 
-def _replace_prose(text: str, old_num: str, new_num: str, suffix: str) -> str:
-    """Replace e.g. '1936 tests' -> '1940 tests' everywhere."""
-    return re.sub(rf"\b{re.escape(old_num)}\s+{re.escape(suffix)}", f"{new_num} {suffix}", text)
-
-
-# The old hardcoded values we're replacing (from the current README)
-OLD = {
-    "tools_total": "149",
-    "tools_exposed": "112",
-    "tools_batch": "37",
-    "tests": "1936",
-    "test_files": "147",
-    "loc": "23,779",
-}
-
 
 def update_readme(m: dict[str, str]) -> None:
     text = README.read_text()
-
-    for old, new, suffix in [
-        (OLD["tools_total"], m["TOOLS_TOTAL"], "tools"),
-        (OLD["tools_total"], m["TOOLS_TOTAL"], "total tools"),
-        (OLD["tools_total"], m["TOOLS_TOTAL"], "total"),
-        (OLD["tools_exposed"], m["TOOLS_EXPOSED"], "AI-exposed"),
-        (OLD["tools_batch"], m["TOOLS_BATCH"], "batch-only"),
-        (OLD["tests"], m["TEST_COUNT"], "tests"),
-        (OLD["test_files"], m["TEST_FILES"], "files"),
-        (OLD["test_files"], m["TEST_FILES"], "test files"),
-    ]:
-        text = _replace_prose(text, old, new, suffix)
-
-    # LOC with comma: ~23,779 -> ~N
-    text = text.replace(f"~{OLD['loc']}", f"~{m['TOTAL_LOC']}")
-    text = text.replace(OLD["loc"], m["TOTAL_LOC"])
-
-    # "1,936 tests" variant
-    text = text.replace(f"1,936 tests", f"{int(m['TEST_COUNT']):,} tests")
 
     # Badge numbers
     text = _replace_badge(text, "tests", f"{m['TEST_COUNT']}%20passing")
@@ -188,18 +154,9 @@ def update_readme(m: dict[str, str]) -> None:
         rf"\g<1>Beta%20v{m['VERSION']}",
         text,
     )
-    text = re.sub(
-        r"(badge/v)[\d.]+-beta",
-        rf"\g<1>{m['VERSION']}-beta",
-        text,
-    )
-
-    # Inline version mentions
-    text = re.sub(r"Beta \(v[\d.]+\)", f"Beta (v{m['VERSION']})", text)
-    text = re.sub(r"beta v[\d.]+", f"beta v{m['VERSION']}", text, flags=re.IGNORECASE)
 
     README.write_text(text)
-    print(f"  README.md  -> {m['TOOLS_TOTAL']} tools, {m['TEST_COUNT']} tests, {m['TOTAL_LOC']} LOC, v{m['VERSION']}")
+    print(f"  README.md  -> {m['TOOLS_TOTAL']} tools, {m['TEST_COUNT']} tests, v{m['VERSION']}")
 
 
 def update_svg(path: Path, replacements: list[tuple[str, str]], label: str) -> None:
