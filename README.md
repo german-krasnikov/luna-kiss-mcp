@@ -35,30 +35,32 @@
 
 ## Why Luna MCP?
 
-- **Stop burning tokens on boilerplate.** Each `batch` call replaces 5–20 individual round-trips — **80–95% fewer tokens** on the same work.
-- **Stop copy-pasting from DevTools.** Your assistant reads the live scene, edits properties, captures screenshots, and triages errors without leaving the chat.
-- **Stop guessing what broke.** 4-tier build diffing, physics backend detection, visual regression, and smart error triage — answers, not log dumps.
+- **Stop burning tokens on boilerplate.** Each `batch` call replaces 5–20 individual MCP round-trips — **80–95% fewer tokens** on the same work.
+- **Stop copy-pasting from Chrome DevTools.** Your assistant inspects the live Luna scene, edits runtime properties, captures screenshots, and triages console errors — all over CDP, without leaving the chat.
+- **Stop guessing what broke.** 4-tier build diffing, physics backend detection, visual regression, and smart error triage — structured answers, not raw log dumps.
 
-**Before / after — inspecting and fixing 3 objects:**
+**Before / after — diagnosing a Luna playable build:**
 
-```python
-# Before: 9 separate MCP calls (~1800 tokens)
-get_hierarchy()
-get_component("Enemy", "Health")
-set_property("Enemy", "Health", "maxHp", "100")
-screenshot()
-# ... 5 more calls
+```
+Before: 5 separate MCP calls (~1500 tokens overhead)
+
+get_hierarchy depth=2
+get_component path="Canvas/EndCard" component_type="Image"
+diagnose_object path="Canvas/EndCard"
+screenshot
+get_console level=E count=10
 ```
 
-```python
-# After: 1 batch call (~120 tokens, 93% savings)
-batch([
-  {"cmd": "get_hierarchy"},
-  {"cmd": "get_component",  "name": "Enemy", "component": "Health"},
-  {"cmd": "set_property",   "name": "Enemy", "component": "Health",
-   "property": "maxHp", "value": "100"},
-  {"cmd": "screenshot"},
-])
+```
+After: 1 batch call (~200 tokens, 87% savings)
+
+batch("
+  get_hierarchy depth=2
+  get_component path=Canvas/EndCard component_type=Image
+  diagnose_object path=Canvas/EndCard
+  screenshot
+  get_console level=E count=10
+")
 ```
 
 <img src="./.github/assets/divider.svg" width="100%" alt="" />
