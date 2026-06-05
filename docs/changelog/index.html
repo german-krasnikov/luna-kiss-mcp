@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luna MCP — Flight Log</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#05060B;--deep:#080A14;--panel:#0E1120;--card:#151A2E;
+  --border:#222742;--muted:#7E879F;--text:#C2C9DD;--bright:#E8ECF6;
+  --cyan:#39E0FF;--blue:#6AB6FF;--violet:#8B7DFF;--green:#3FE0A3;
+  --amber:#FFC24B;
+}
+html{background:var(--sky);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;scroll-behavior:smooth}
+body{min-height:100vh;overflow-x:hidden;position:relative}
+
+/* ---- Particle canvas ---- */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ---- Layout ---- */
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:40px 24px 80px}
+header{text-align:center;margin-bottom:56px}
+header h1{font-size:clamp(28px,5vw,48px);font-weight:800;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+header p{color:var(--muted);font-size:14px;letter-spacing:2px;text-transform:uppercase}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--cyan);text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase;opacity:.7;transition:opacity .3s}
+.back-link:hover{opacity:1}
+.back-link svg{width:16px;height:16px}
+
+/* ---- Spine ---- */
+.timeline{position:relative;padding-left:48px}
+.timeline::before{content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--cyan),var(--violet),var(--green));opacity:.35;border-radius:1px}
+
+/* ---- Milestone card ---- */
+.milestone{position:relative;margin-bottom:32px;opacity:0;transform:translateY(30px);transition:opacity .6s ease-out,transform .6s ease-out}
+.milestone.visible{opacity:1;transform:translateY(0)}
+.milestone .dot{position:absolute;left:-38px;top:18px;width:14px;height:14px;border-radius:50%;border:2.5px solid var(--cyan);background:var(--panel);transition:box-shadow .3s,border-color .3s;z-index:2}
+.milestone:nth-child(2) .dot{border-color:var(--violet)}
+.milestone:nth-child(3) .dot{border-color:var(--green)}
+.milestone:nth-child(4) .dot{border-color:var(--blue)}
+.milestone:nth-child(5) .dot{border-color:var(--green)}
+.milestone.active .dot{box-shadow:0 0 18px var(--cyan);border-color:var(--cyan)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;cursor:pointer;transition:border-color .3s,box-shadow .3s,transform .2s}
+.card:hover{border-color:var(--cyan);box-shadow:0 0 24px rgba(57,224,255,.08);transform:translateX(4px)}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.card-header .icon{font-size:22px;flex-shrink:0}
+.card-header h2{font-size:18px;font-weight:700;color:var(--bright);margin:0}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 10px;border-radius:10px;letter-spacing:.5px;margin-left:auto;flex-shrink:0}
+.tag.foundation{background:rgba(139,125,255,.15);color:var(--violet)}
+.tag.intelligence{background:rgba(57,224,255,.12);color:var(--cyan)}
+.tag.economy{background:rgba(63,224,163,.12);color:var(--green)}
+.tag.field{background:rgba(106,182,255,.12);color:var(--blue)}
+.tag.beta{background:rgba(63,224,163,.15);color:var(--green)}
+.card-summary{font-size:14px;color:var(--muted);line-height:1.5}
+
+/* ---- Detail view ---- */
+.detail-overlay{position:fixed;inset:0;z-index:100;background:rgba(5,6,11,.92);backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:opacity .4s ease;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 24px}
+.detail-overlay.open{opacity:1;pointer-events:auto}
+.detail-panel{max-width:740px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 32px;transform:translateY(40px) scale(.96);transition:transform .45s cubic-bezier(.16,1,.3,1);position:relative;margin:auto}
+.detail-overlay.open .detail-panel{transform:translateY(0) scale(1)}
+.detail-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--panel);color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .3s,color .3s}
+.detail-close:hover{border-color:var(--cyan);color:var(--cyan)}
+.detail-panel h2{font-size:24px;font-weight:800;color:var(--bright);margin-bottom:4px}
+.detail-panel .detail-tag{margin-bottom:20px;display:inline-block}
+.detail-panel .detail-body{color:var(--text);font-size:15px;line-height:1.7}
+.detail-panel .detail-body h3{color:var(--cyan);font-size:16px;margin:20px 0 8px;font-weight:700}
+.detail-panel .detail-body ul{padding-left:20px;margin:8px 0}
+.detail-panel .detail-body li{margin-bottom:4px}
+.detail-panel .detail-body code{background:var(--panel);padding:1px 6px;border-radius:4px;font-size:13px;color:var(--cyan);font-family:'SF Mono',Menlo,Consolas,monospace}
+.detail-panel .detail-body strong{color:var(--bright)}
+
+/* ---- Particle burst on click ---- */
+.burst{position:fixed;pointer-events:none;z-index:200}
+.burst-dot{position:absolute;width:4px;height:4px;border-radius:50%;animation:burstOut .7s ease-out forwards}
+@keyframes burstOut{
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(0)}
+}
+
+/* ---- Stats bar ---- */
+.stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.stat-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 18px;font-size:13px;color:var(--muted);letter-spacing:.3px}
+.stat-chip b{color:var(--cyan);font-weight:700}
+.stat-chip:nth-child(2) b{color:var(--violet)}
+.stat-chip:nth-child(3) b{color:var(--green)}
+
+/* ---- Footer ---- */
+footer{text-align:center;padding:32px 0 16px;color:var(--muted);font-size:12px}
+footer a{color:var(--cyan);text-decoration:none}
+
+@media(max-width:600px){
+  .wrap{padding:24px 16px 60px}
+  .timeline{padding-left:36px}
+  .timeline::before{left:12px}
+  .milestone .dot{left:-30px}
+  .card{padding:16px}
+  .detail-panel{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="wrap">
+  <header>
+    <a href="https://github.com/german-krasnikov/luna-kiss-mcp" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      Back to repo
+    </a>
+    <h1>Flight Log</h1>
+    <p>Luna MCP Release Timeline</p>
+  </header>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="timeline" id="timeline"></div>
+
+  <footer>
+    <a href="https://github.com/german-krasnikov/luna-kiss-mcp">Luna MCP</a> &middot; MIT License &middot; Built by <a href="https://github.com/german-krasnikov">German Krasnikov</a>
+  </footer>
+</div>
+
+<div class="detail-overlay" id="overlay">
+  <div class="detail-panel" id="detail-panel">
+    <button class="detail-close" id="detail-close">&times;</button>
+    <div id="detail-icon"></div>
+    <h2 id="detail-title"></h2>
+    <div id="detail-tag"></div>
+    <div class="detail-body" id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+// ---- Milestone data (parsed from CHANGELOG.md structure) ----
+const MILESTONES = [
+  {
+    icon: "\u{1F6F0}️",
+    title: "Phase A+B+C",
+    tag: "foundation",
+    tagLabel: "Foundation",
+    summary: "Refactor + audit. Core architecture established.",
+    body: `<h3>What landed</h3>
+<ul>
+<li>Initial refactor and audit pass establishing the core architecture: <strong>AI Assistant ↔ (stdio) ↔ Luna MCP (Python, FastMCP) ↔ (CDP WebSocket) ↔ Chrome</strong></li>
+<li>CDP bridge with <strong>auto-reconnect</strong>, JS helper injection into the Luna iframe</li>
+<li>JS→C# source mapping and the Playworks typemap resolver</li>
+<li>Engineering guardrails: <strong>SOLID / DRY / KISS / TDD</strong> (Red-Green-Refactor), files &lt; 200 lines, functions &lt; 50 lines</li>
+<li>Zero speculative abstractions — no "for the future"</li>
+</ul>`
+  },
+  {
+    icon: "\u{1F9E0}",
+    title: "Waves 1–6",
+    tag: "intelligence",
+    tagLabel: "Intelligence",
+    summary: "The brain: learning, prediction, and server-side AI.",
+    body: `<h3>Wave 1 — Event-driven core</h3>
+<ul>
+<li><strong>EventBus</strong> (push-based events), Action Templates, Visual Regression v2 (two-tier pixel → semantic diff)</li>
+</ul>
+<h3>Wave 2 — Metrics & learning</h3>
+<ul>
+<li><strong>MetricsRegistry</strong> (per-tool p50/p95), SQLite <strong>LessonStore</strong>, Speculator with auto-disable prefetch</li>
+<li>Post-write <strong>Watchdog</strong>, Macro-tools (<code>do</code>, <code>ask</code>, <code>endcard</code>, <code>gameplay</code>, <code>monetization</code>)</li>
+</ul>
+<h3>Wave 3 — Cross-build intelligence</h3>
+<ul>
+<li>Typemap-aware cross-build lessons, Multi-Frame Visual analysis</li>
+<li><strong>ToolHinter</strong> (10 behavioral anti-pattern rules) + <strong>Graceful Degradation</strong></li>
+</ul>
+<h3>Wave 4 — Adaptive budgets</h3>
+<ul>
+<li><strong>Budget Auto-tuning</strong> (adaptive cap from historical data, sigmoid decision ramp)</li>
+<li><strong>Playable Replay</strong> (record/replay MCP sessions with PII redaction)</li>
+</ul>
+<h3>Wave 5 — Physics Detective</h3>
+<ul>
+<li>Goblin / Verlet / Baked / Unified backend detection</li>
+<li>Symptom classification + 9 physics knowledge seeds</li>
+</ul>
+<h3>Wave 6 — Brain features F11–F20</h3>
+<ul>
+<li>Smart Error Triage, Compliance Checker, Intent Router</li>
+<li>Transpiled Code Explainer, Hierarchy Distiller</li>
+<li>Auto-Playtest generation, Runtime Anomaly Detector</li>
+</ul>`
+  },
+  {
+    icon: "\u{1F48E}",
+    title: "Token Economy",
+    tag: "economy",
+    tagLabel: "up to 92% saved",
+    summary: "The soul of the project — stacked token savings.",
+    body: `<h3>Stacked savings</h3>
+<ul>
+<li><code>batch</code> — runs multi-step workflows in a single round-trip (<strong>80%+</strong> token savings)</li>
+<li><strong>Visual Tier 1</strong> — text summaries instead of PNG (<strong>30–100×</strong> smaller)</li>
+<li><strong>JPEG screenshots</strong> — 3–5× vs PNG</li>
+<li><strong>Set-of-Mark</strong> — annotated screenshots (<strong>70–90%</strong> savings on interactive flows)</li>
+<li><strong>Cost Budget Router</strong> — smart routing (<strong>up to 92%</strong>)</li>
+<li>Plain-text responses + server-side Haiku sampling (<strong>~28k tokens</strong> saved per screenshot)</li>
+</ul>
+<h3>Design principles</h3>
+<ul>
+<li><strong>No cache, by design</strong> — Luna scene state mutates too fast to trust a cache</li>
+<li>Every response is plain text, not JSON — less ceremony, fewer tokens</li>
+<li>6-layer composition stack filters costly mistakes before they reach Chrome</li>
+</ul>`
+  },
+  {
+    icon: "\u{1F680}",
+    title: "Sprints 1–6",
+    tag: "field",
+    tagLabel: "Field ready",
+    summary: "Probes, CDP domains, and CI — depth and field-readiness.",
+    body: `<h3>Sprint 1 — Token economics + probes</h3>
+<ul><li>JPEG screenshots, frame-time breakdown, native perf probes</li></ul>
+<h3>Sprint 2 — Diagnostics depth</h3>
+<ul><li>Animator graph dump, INSIGHTS state/events, tween inventory + health</li></ul>
+<h3>Sprint 3 — Interaction + lifecycle</h3>
+<ul><li>Synthetic gestures via CDP Input, DOTween control, lifecycle waiter, physics forensics</li></ul>
+<h3>Sprint 4 — Native CDP domains</h3>
+<ul><li>CPU throttle, device metrics emulation, network conditions, heap sampling, frame tracing, JS coverage map</li></ul>
+<h3>Sprint 5 — Static intelligence</h3>
+<ul><li>C# linter (<code>lint_csharp</code>), Jake task discovery, Luna build-issue seeds</li></ul>
+<h3>Sprint 6 — Server health</h3>
+<ul><li>Budget calibrator, headless CI harness (JUnit XML), playground fields, GPU/VRAM/startup probes, <code>step_frame</code></li></ul>`
+  },
+  {
+    icon: "\u{1F315}",
+    title: "v0.1.0 — Beta",
+    tag: "beta",
+    tagLabel: "Touchdown",
+    summary: "First public release. 198 tools, 1620 tests, ~30k LOC.",
+    body: `<h3>Launch stats</h3>
+<ul>
+<li><strong>198 tools</strong> (112 AI-exposed + 86 batch-only)</li>
+<li><strong>1,620 tests</strong> across 147 test files</li>
+<li><strong>~30,236 LOC</strong> of server code (Python + JS)</li>
+<li>Python 3.10–3.13 support</li>
+<li><code>luna_helpers.js</code> v1.6.1 (2,647 LOC)</li>
+</ul>
+<h3>Highlights</h3>
+<ul>
+<li>Works with <strong>any stdio MCP client</strong>: Claude Code, OpenAI Codex CLI, Cursor, Windsurf</li>
+<li>Lazy auto-connect on first tool call</li>
+<li>8 capability pillars: scene, visuals, physics, builds, flags, errors, perf, macros</li>
+<li>MIT License</li>
+</ul>`
+  }
+];
+
+// ---- Render timeline ----
+const timeline = document.getElementById('timeline');
+MILESTONES.forEach((m, i) => {
+  const el = document.createElement('div');
+  el.className = 'milestone';
+  el.style.transitionDelay = `${i * 0.12}s`;
+  el.innerHTML = `
+    <div class="dot"></div>
+    <div class="card" data-idx="${i}">
+      <div class="card-header">
+        <span class="icon">${m.icon}</span>
+        <h2>${m.title}</h2>
+        <span class="tag ${m.tag}">${m.tagLabel}</span>
+      </div>
+      <div class="card-summary">${m.summary}</div>
+    </div>`;
+  timeline.appendChild(el);
+});
+
+// ---- Stats bar ----
+const last = MILESTONES[MILESTONES.length - 1];
+document.getElementById('stats').innerHTML = `
+  <span class="stat-chip"><b>198</b> tools</span>
+  <span class="stat-chip"><b>1,620</b> tests</span>
+  <span class="stat-chip"><b>~30k</b> LOC</span>`;
+
+// ---- Scroll reveal ----
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.15 });
+document.querySelectorAll('.milestone').forEach(el => observer.observe(el));
+
+// ---- Detail overlay ----
+const overlay = document.getElementById('overlay');
+const panel = document.getElementById('detail-panel');
+
+function openDetail(idx, evt) {
+  const m = MILESTONES[idx];
+  document.getElementById('detail-icon').textContent = m.icon;
+  document.getElementById('detail-title').textContent = m.title;
+  document.getElementById('detail-tag').innerHTML = `<span class="tag ${m.tag} detail-tag">${m.tagLabel}</span>`;
+  document.getElementById('detail-body').innerHTML = m.body;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (evt) spawnBurst(evt.clientX, evt.clientY);
+}
+
+function closeDetail() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('detail-close').addEventListener('click', closeDetail);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeDetail(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+timeline.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  openDetail(+card.dataset.idx, e);
+});
+
+// ---- Particle burst on card click ----
+function spawnBurst(x, y) {
+  const colors = ['var(--cyan)','var(--violet)','var(--green)','var(--blue)','var(--amber)'];
+  const container = document.createElement('div');
+  container.className = 'burst';
+  container.style.left = x + 'px';
+  container.style.top = y + 'px';
+  for (let i = 0; i < 14; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'burst-dot';
+    const angle = (Math.PI * 2 / 14) * i + Math.random() * 0.4;
+    const dist = 40 + Math.random() * 60;
+    dot.style.setProperty('--bx', `${Math.cos(angle) * dist}px`);
+    dot.style.setProperty('--by', `${Math.sin(angle) * dist}px`);
+    dot.style.background = colors[i % colors.length];
+    dot.style.width = dot.style.height = (2 + Math.random() * 3) + 'px';
+    container.appendChild(dot);
+  }
+  document.body.appendChild(container);
+  setTimeout(() => container.remove(), 800);
+}
+
+// ---- Background particle canvas ----
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H;
+const dots = [];
+const COLORS = ['#39E0FF','#8B7DFF','#6AB6FF','#3FE0A3'];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+for (let i = 0; i < 60; i++) {
+  dots.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    r: 0.6 + Math.random() * 1.4,
+    vy: -(0.15 + Math.random() * 0.35),
+    vx: (Math.random() - 0.5) * 0.2,
+    alpha: 0.1 + Math.random() * 0.3,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    pulse: Math.random() * Math.PI * 2,
+    pulseSpeed: 0.005 + Math.random() * 0.015
+  });
+}
+
+function tick() {
+  ctx.clearRect(0, 0, W, H);
+  for (const d of dots) {
+    d.x += d.vx;
+    d.y += d.vy;
+    d.pulse += d.pulseSpeed;
+    if (d.y < -10) { d.y = H + 10; d.x = Math.random() * W; }
+    if (d.x < -10) d.x = W + 10;
+    if (d.x > W + 10) d.x = -10;
+    const a = d.alpha * (0.6 + 0.4 * Math.sin(d.pulse));
+    ctx.globalAlpha = a;
+    ctx.fillStyle = d.color;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(tick);
+}
+tick();
+
+// ---- Prefers reduced motion ----
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  canvas.style.display = 'none';
+  document.querySelectorAll('.milestone').forEach(el => el.classList.add('visible'));
+}
+</script>
+</body>
+</html>

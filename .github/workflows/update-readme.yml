@@ -40,7 +40,7 @@ jobs:
           git diff --quiet && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md .github/assets/*.svg
+          git add README.md .github/assets/*.svg docs/
           git diff --cached --quiet && exit 0
           git commit -m "chore: update README stats [skip ci]"
           git push

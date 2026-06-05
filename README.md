@@ -52,13 +52,8 @@
 <a href="#first-steps">First Steps</a> &nbsp;·&nbsp;
 <a href="#talk-to-your-build-watch-it-answer">Demo</a>
 <br/>
-<a href="#architecture">Architecture</a> &nbsp;·&nbsp;
 <a href="#-tool-arsenal">Tool Arsenal</a> &nbsp;·&nbsp;
 <a href="#setup">Setup &amp; Requirements</a> &nbsp;·&nbsp;
-<a href="#environment-variables">Environment Variables</a> &nbsp;·&nbsp;
-<a href="#troubleshooting">Troubleshooting</a>
-<br/>
-<a href="#the-crew">The Crew</a> &nbsp;·&nbsp;
 <a href="#ecosystem--telemetry">Ecosystem</a> &nbsp;·&nbsp;
 <a href="#flight-log--release-timeline">Flight Log</a> &nbsp;·&nbsp;
 <a href="#-join-the-crew">Contribute</a>
@@ -314,65 +309,6 @@ You don't memorize tool names. You don't write CDP boilerplate. You speak to you
 
 > [!TIP]
 > Every row above is a real exposed tool. The magic isn't a chatbot wrapper — it's **198 tools** (112 AI-exposed + 86 batch-only) routed through a [6-layer composition stack](#the-6-layer-composition-stack) so the assistant gets answers, not raw dumps. Ask in your own words; Luna MCP maps intent → instrument.
-
-<img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />
-
-<div align="center">
-
-## Architecture
-
-**One server, three worlds, zero glue.** Your AI assistant speaks plain MCP over `stdio`; Luna MCP translates intent into Chrome DevTools Protocol calls over a WebSocket; Chrome runs the Luna playable build with JS helpers injected straight into its iframe. Telemetry flows back the same way — text-first, token-minimal.
-
-</div>
-
-<div align="center">
-  <img src="./.github/assets/arch-flow.svg" width="900" alt="Animated architecture flow — intent travels from the AI assistant over stdio to Luna MCP, out over a CDP WebSocket to Chrome, and live scene state flows back as plain text." />
-</div>
-
-```mermaid
-flowchart LR
-    AI["🛰 AI Assistant<br/><sub>Claude Code · Codex · Cursor · Windsurf</sub>"]
-    MCP["🌙 Luna MCP<br/><sub>Python · FastMCP · 198 tools</sub>"]
-    CHROME["🌑 Chrome<br/><sub>Luna build · JS helpers in iframe</sub>"]
-
-    AI -- "stdio" --> MCP
-    MCP -- "CDP WebSocket" --> CHROME
-    CHROME -. "live scene state" .-> MCP
-    MCP -. "plain-text results" .-> AI
-
-    classDef ai      fill:#0E1120,stroke:#39E0FF,stroke-width:1.5px,color:#E8ECF6;
-    classDef server  fill:#151A2E,stroke:#8B7DFF,stroke-width:2px,color:#E8ECF6;
-    classDef chrome  fill:#0E1120,stroke:#8B7DFF,stroke-width:1.5px,color:#E8ECF6;
-
-    class AI ai;
-    class MCP server;
-    class CHROME chrome;
-```
-
-> **Lazy auto-connect.** Nothing dials out at boot. The first tool call triggers `_ensure_connected()`, which finds the Luna page, opens the CDP WebSocket, and injects the JS helpers into the iframe — re-injecting automatically if the socket drops and reconnects.
->
-> **No cache, by design.** A Luna scene mutates faster than any cache could stay honest, so every call reads live state over CDP. You never debug a stale snapshot — what you query is what's on screen right now.
-
-<div align="center">
-
-### The 6-layer composition stack &mdash; in flight
-
-Every tool call descends through six wrappers, outermost first. Each layer earns its place — recording, hinting, surviving an outage, spending tokens wisely, verifying mutations, and catching typos before they hit the wire.
-
-</div>
-
-<div align="center">
-  <img src="./.github/assets/arch-stack.svg" width="620" alt="Animated stack of the six composition wrappers — Recorder, Hinter, Degradation, Budget gate, Reflect, and Schema guard — lighting up in order as a call passes through." />
-</div>
-
-| # | Layer | What it does |
-|:-:|:--|:--|
-| 1 | **Recorder** | Captures request / response as redacted JSONL (gated by `LUNA_RECORD`) |
-| 2 | **Hinter** | Observes behavioral anti-patterns · injects typemap lessons |
-| 3 | **Degradation** | Graceful fallback — L1 Chrome down, L2 typemap missing |
-| 4 | **Budget gate** | Decides **run / downgrade / skip** based on token cost |
-| 5 | **Reflect** | Reads back modified values post-flight (saves 5–15k tokens per mutation) |
-| 6 | **Schema guard** | Pre-flight validation — typo detection + semantic checks |
 
 <img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />
 
@@ -915,126 +851,6 @@ python3 -m luna_mcp.cli.ci \
 
 <img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />
 
-## The Crew
-
-<img src="./.github/assets/crew-banner.svg" width="100%" alt="Animated crew banner — the captain and five AI agent stations arrayed across a starfield, each glowing with its model badge." />
-
-<div align="center">
-
-<em>Luna MCP is flown by one human captain and a crew of five AI agents — each a documented, model-backed station in the build pipeline. Real names. Real models. Real roles.</em>
-
-<br/><br/>
-
-<table>
-<tr>
-<td align="center" width="640">
-
-<img src="https://github.com/german-krasnikov.png" width="110" alt="Avatar of German Krasnikov, maintainer and creator of Luna MCP" />
-
-<br/><br/>
-
-### 🛰️ German Krasnikov · **Captain**
-
-<a href="https://github.com/german-krasnikov"><img src="https://img.shields.io/badge/GitHub-@german--krasnikov-39E0FF?style=flat-square&logo=github&logoColor=05060B&labelColor=0E1120" alt="GitHub @german-krasnikov" /></a>
-<img src="https://img.shields.io/badge/Role-Maintainer%20%26%20Creator-8B7DFF?style=flat-square&labelColor=0E1120" alt="Maintainer and Creator" />
-<img src="https://img.shields.io/badge/Crew-Human-E8ECF6?style=flat-square&labelColor=0E1120" alt="Human crew member" />
-
-<sub>Charts the mission, commissions the agents, signs off the launch.</sub>
-
-</td>
-</tr>
-</table>
-
-<br/>
-
-<h3>⟡ The Agent Roster — organized by station</h3>
-
-<sub>Five autonomous crewmates, grouped by category. Each one is a real, documented agent in the repo.</sub>
-
-<br/><br/>
-
-<table>
-<tr>
-<td align="center" width="240" valign="top">
-<img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Architect-Luna" width="88" alt="Bot avatar for the senior-architect agent" />
-<br/>
-<sub>🪐 <b>ARCHITECTURE</b></sub>
-<br/>
-<b>senior-architect</b>
-<br/>
-<img src="https://img.shields.io/badge/Opus-8B7DFF?style=flat-square&labelColor=0E1120" alt="Model: Opus" />
-<br/>
-<sub>Designs module structure, CDP comms &amp; serialization formats.</sub>
-</td>
-<td align="center" width="240" valign="top">
-<img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Engineer-Sonnet" width="88" alt="Bot avatar for the senior-developer agent" />
-<br/>
-<sub>⚙️ <b>ENGINEERING</b></sub>
-<br/>
-<b>senior-developer</b>
-<br/>
-<img src="https://img.shields.io/badge/Sonnet-39E0FF?style=flat-square&labelColor=0E1120" alt="Model: Sonnet" />
-<br/>
-<sub>Writes code &amp; tests via TDD — Red&nbsp;→&nbsp;Green&nbsp;→&nbsp;Refactor.</sub>
-</td>
-<td align="center" width="240" valign="top">
-<img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Reviewer-Guard" width="88" alt="Bot avatar for the code-reviewer agent" />
-<br/>
-<sub>🛡️ <b>QUALITY &amp; SECURITY</b></sub>
-<br/>
-<b>code-reviewer</b>
-<br/>
-<img src="https://img.shields.io/badge/Sonnet-39E0FF?style=flat-square&labelColor=0E1120" alt="Model: Sonnet" />
-<br/>
-<sub>Audits quality, security, performance &amp; token efficiency.</sub>
-</td>
-</tr>
-<tr>
-<td align="center" width="240" valign="top">
-<img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=DocKeeper-Haiku" width="88" alt="Bot avatar for the doc-keeper agent" />
-<br/>
-<sub>📡 <b>DOCUMENTATION</b></sub>
-<br/>
-<b>doc-keeper</b>
-<br/>
-<img src="https://img.shields.io/badge/Haiku-566079?style=flat-square&labelColor=0E1120" alt="Model: Haiku" />
-<br/>
-<sub>Syncs docs, sweeps temp files, signs the final commit.</sub>
-</td>
-<td align="center" width="240" valign="top">
-<img src="https://api.dicebear.com/9.x/bottts-neutral/svg?seed=LunaDebugger-Field" width="88" alt="Bot avatar for the luna-debugger agent" />
-<br/>
-<sub>🔭 <b>FIELD DEBUGGING</b></sub>
-<br/>
-<b>luna-debugger</b>
-<br/>
-<img src="https://img.shields.io/badge/Sonnet-39E0FF?style=flat-square&labelColor=0E1120" alt="Model: Sonnet" />
-<br/>
-<sub>Debugs Luna builds live in Chrome, over CDP.</sub>
-</td>
-<td align="center" width="240" valign="top">
-<br/>
-<sub>⟡</sub>
-<br/>
-<sub><i>Every station<br/>reports to the Captain.</i></sub>
-</td>
-</tr>
-</table>
-
-<br/>
-
-<h4>The mission flight plan</h4>
-
-<img src="./.github/assets/crew-pipeline.svg" width="860" alt="Animated pipeline — architect to developer (TDD) to reviewer to doc-keeper, flowing left to right, with luna-debugger branching off for live field calls." />
-
-<br/>
-
-<sub><code>architect</code> → <code>developer (TDD)</code> → <code>reviewer</code> → <code>fixes</code> → <code>doc-keeper</code> &nbsp;·&nbsp; <code>luna-debugger</code> rides along for live field calls.</sub>
-
-</div>
-
-<img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />
-
 <h2 align="center">Ecosystem &amp; Telemetry</h2>
 
 <img src="./.github/assets/ecosystem-constellation.svg" width="100%" alt="Animated ecosystem constellation — Python, FastMCP, CDP, Pillow, websockets, aiohttp, and Claude nodes wired together as a glowing orbital network." />
@@ -1115,60 +931,19 @@ python3 -m luna_mcp.cli.ci \
 </div>
 
 <div align="center">
-  <img src="./.github/assets/changelog.svg" width="900" alt="Animated release timeline — five milestones revealed in sequence along a glowing vertical spine as a marker descends: Phase A+B+C (foundation), Waves 1-6 (intelligence), Token Economy (up to 92% saved), Sprints 1-6 (field-ready), and v0.1.0 Beta (198 tools, 1620 tests, ~30,236 LOC)." />
+  <img src="./.github/assets/changelog.svg" width="900" alt="Animated release timeline — five milestones along a glowing vertical spine." />
 </div>
 
-<details>
-<summary><sub>Read the log as text</sub></summary>
+<div align="center">
+
 <br/>
 
-<table>
-<thead>
-<tr>
-<th align="left">Milestone</th>
-<th align="left">Tag</th>
-<th align="left">What landed</th>
-</tr>
-</thead>
-<tbody>
+<a href="https://german-krasnikov.github.io/luna-kiss-mcp/changelog/"><img alt="Explore the interactive Flight Log" src="https://img.shields.io/badge/Explore_Interactive_Flight_Log-39E0FF?style=for-the-badge&logo=github&logoColor=05060B&labelColor=0E1120"></a>
 
-<tr>
-<td>🛰️ <b>Phase A+B+C</b></td>
-<td><img src="https://img.shields.io/badge/foundation-8B7DFF?style=flat-square&labelColor=0E1120" alt="foundation"/></td>
-<td><b>Foundation.</b> Refactor + audit. The CDP bridge (auto-reconnect), JS helper injection into the Luna iframe, JS→C# source mapping, and the Playworks typemap resolver. Guardrails set: SOLID / DRY / KISS / TDD, files &lt; 200 lines.</td>
-</tr>
+<br/><br/>
 
-<tr>
-<td>🧠 <b>Waves 1–6</b></td>
-<td><img src="https://img.shields.io/badge/intelligence-39E0FF?style=flat-square&labelColor=0E1120" alt="intelligence"/></td>
-<td><b>The brain.</b> EventBus + Action Templates + Visual Regression v2 · MetricsRegistry + LessonStore + Speculator + Watchdog + Macro-tools · Typemap-aware lessons + Multi-Frame Visual + Graceful Degradation · Budget Auto-tuning + Playable Replay · <b>Physics Detective</b> (Goblin / Verlet / Baked / Unified) · SamplingService brain features <code>F11–F20</code>.</td>
-</tr>
+<sub>Click any milestone for animated details with particle effects &middot; Full changelog in <a href="./CHANGELOG.md"><b>CHANGELOG.md</b></a></sub>
 
-<tr>
-<td>💎 <b>Token Economy</b></td>
-<td><img src="https://img.shields.io/badge/up_to_92%25_saved-3FE0A3?style=flat-square&labelColor=0E1120" alt="up to 92% saved"/></td>
-<td><b>The soul of the project.</b> <code>batch</code> = one round-trip (80%+) · Visual Tier 1 text-not-PNG (30–100×) · JPEG screenshots (3–5×) · Set-of-Mark annotations (70–90%) · Cost Budget Router (up to 92%) · plain-text responses · Haiku server-side sampling (~28k tokens/screenshot).</td>
-</tr>
-
-<tr>
-<td>🚀 <b>Sprints 1–6</b></td>
-<td><img src="https://img.shields.io/badge/field_ready-39E0FF?style=flat-square&labelColor=0E1120" alt="field ready"/></td>
-<td><b>Probes &amp; field-readiness.</b> Token economics + native perf probes · animator/INSIGHTS/tween diagnostics · synthetic gestures + lifecycle + physics forensics · native CDP domains (emulation / network / heap / trace / coverage) · C# linter + Jake discovery · headless CI harness (JUnit XML) + GPU / VRAM / startup probes.</td>
-</tr>
-
-<tr>
-<td>🌕 <b>v0.1.0 — Beta</b></td>
-<td><img src="https://img.shields.io/badge/v0.1.0-beta-3FE0A3?style=flat-square&labelColor=0E1120" alt="v0.1.0 beta"/> <img src="https://img.shields.io/badge/license-MIT-7E879F?style=flat-square&labelColor=0E1120" alt="MIT"/></td>
-<td><b>Touchdown.</b> <b>198 tools</b> (112 AI-exposed + 86 batch-only) · <b>1620 tests</b> across 147 files · ~30,236 LOC · Python 3.10–3.13 · <code>luna_helpers.js</code> v1.6.1.</td>
-</tr>
-
-</tbody>
-</table>
-
-</details>
-
-<div align="center">
-<sub>Full reverse-chronological detail lives in <a href="./CHANGELOG.md"><b>CHANGELOG.md</b></a> · <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog</a> format.</sub>
 </div>
 
 <img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />

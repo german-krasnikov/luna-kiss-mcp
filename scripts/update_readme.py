@@ -260,6 +260,24 @@ def update_changelog_svg(m: dict[str, str]) -> None:
     print(f"  changelog  -> {m['TOOLS_TOTAL']} tools, {m['TEST_COUNT']} tests, {m['TOTAL_LOC']} LOC")
 
 
+def update_changelog_html(m: dict[str, str]) -> None:
+    """Patch stats in the interactive changelog page."""
+    html_path = ROOT / "docs" / "changelog" / "index.html"
+    if not html_path.exists():
+        return
+    text = html_path.read_text()
+    text = re.sub(r'<b>198</b> tools', f'<b>{m["TOOLS_TOTAL"]}</b> tools', text)
+    text = re.sub(r'<b>1,620</b> tests', f'<b>{int(m["TEST_COUNT"]):,}</b> tests', text)
+    text = re.sub(r'<b>~30k</b> LOC', f'<b>~{int(m["TOTAL_LOC"].replace(",",""))//1000}k</b> LOC', text)
+    text = re.sub(r'<strong>198 tools</strong>', f'<strong>{m["TOOLS_TOTAL"]} tools</strong>', text)
+    text = re.sub(r'112 AI-exposed \+ 86 batch-only', f'{m["TOOLS_EXPOSED"]} AI-exposed + {m["TOOLS_BATCH"]} batch-only', text)
+    text = re.sub(r'<strong>1,620 tests</strong>', f'<strong>{int(m["TEST_COUNT"]):,} tests</strong>', text)
+    text = re.sub(r'<strong>~30,236 LOC</strong>', f'<strong>~{m["TOTAL_LOC"]} LOC</strong>', text)
+    text = re.sub(r'198 tools, 1620 tests', f'{m["TOOLS_TOTAL"]} tools, {m["TEST_COUNT"]} tests', text)
+    html_path.write_text(text)
+    print(f"  changelog.html -> {m['TOOLS_TOTAL']} tools, {m['TEST_COUNT']} tests")
+
+
 def update_generic_svgs(m: dict[str, str]) -> None:
     """Patch tool/test counts in all remaining SVG assets."""
     assets = ROOT / ".github" / "assets"
@@ -284,6 +302,7 @@ def main() -> None:
     update_hero(m)
     update_subtitle(m)
     update_changelog_svg(m)
+    update_changelog_html(m)
     update_generic_svgs(m)
     print("\nDone.")
 
