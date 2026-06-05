@@ -100,6 +100,10 @@
     <g>
       <!-- tail trails to the LEFT of the head (head sits at local x=0) -->
       <rect x="-120" y="20.4" width="120" height="3.2" rx="1.6" fill="url(#div__cometTail)" opacity="0.9"/>
+      <!-- secondary trail particle (follows 0.3s behind) -->
+      <circle cx="-28" cy="22" r="2.4" fill="#8B7DFF" opacity="0.45" filter="url(#div__glowFine)"/>
+      <circle cx="-52" cy="22" r="1.6" fill="#6AB6FF" opacity="0.3" filter="url(#div__glowFine)"/>
+      <circle cx="-80" cy="22" r="1.0" fill="#39E0FF" opacity="0.2"/>
       <!-- glowing head -->
       <circle cx="0" cy="22" r="6" fill="url(#div__cometHead)" filter="url(#div__glow)"/>
       <circle cx="0" cy="22" r="2.1" fill="#F4F7FF"/>

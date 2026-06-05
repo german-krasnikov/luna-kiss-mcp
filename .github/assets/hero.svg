@@ -92,6 +92,21 @@
       @keyframes hero__drift {
         0% { transform: translateX(0); } 50% { transform: translateX(8px); } 100% { transform: translateX(0); }
       }
+      /* Stat chip staggered entrance */
+      .hero__chip { opacity: 0; animation: hero__chipIn 0.9s ease-out forwards; }
+      .hero__chip.c1 { animation-delay: 1.8s; }
+      .hero__chip.c2 { animation-delay: 2.1s; }
+      .hero__chip.c3 { animation-delay: 2.4s; }
+      @keyframes hero__chipIn {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Rising particle drift */
+      @keyframes hero__rise {
+        from { opacity: 0; } 8% { opacity: var(--p); } 85% { opacity: var(--p); } to { opacity: 0; }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         * { animation: none !important; }
       }
@@ -269,19 +284,63 @@
           font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">AI Assistant  ·  stdio  ·  MCP  ·  CDP WebSocket  ·  Chrome (Luna build)</text>
   </g>
 
-  <!-- Stat chips -->
+  <!-- Rising particles — thermal exhaust stardust -->
+  <g opacity="0.6">
+    <circle cx="580" cy="340" r="1.4" fill="#39E0FF" style="--p:0.45">
+      <animate attributeName="cy" values="340;-10" dur="8s"  begin="0s"   repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.45;0.3;0" dur="8s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="620" cy="340" r="1.0" fill="#39E0FF">
+      <animate attributeName="cy" values="340;-10" dur="10s" begin="1.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.4;0.25;0" dur="10s" begin="1.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="700" cy="340" r="1.6" fill="#8B7DFF">
+      <animate attributeName="cy" values="340;-10" dur="7s"  begin="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.45;0.3;0" dur="7s" begin="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="660" cy="340" r="0.8" fill="#39E0FF">
+      <animate attributeName="cy" values="340;-10" dur="12s" begin="0.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.35;0.2;0" dur="12s" begin="0.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="740" cy="340" r="1.2" fill="#8B7DFF">
+      <animate attributeName="cy" values="340;-10" dur="9s"  begin="3.1s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.4;0.25;0" dur="9s" begin="3.1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="550" cy="340" r="1.0" fill="#6AB6FF">
+      <animate attributeName="cy" values="340;-10" dur="11s" begin="4.0s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.3;0.2;0"  dur="11s" begin="4.0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="600" cy="340" r="1.1" fill="#8B7DFF">
+      <animate attributeName="cy" values="340;-10" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.35;0.2;0" dur="9.5s" begin="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="720" cy="340" r="0.9" fill="#6AB6FF">
+      <animate attributeName="cy" values="340;-10" dur="13s" begin="5.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.3;0.15;0" dur="13s" begin="5.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="340" r="1.3" fill="#3FE0A3">
+      <animate attributeName="cy" values="340;-10" dur="14s" begin="2.0s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.25;0.15;0" dur="14s" begin="2.0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="780" cy="340" r="0.7" fill="#3FE0A3">
+      <animate attributeName="cy" values="340;-10" dur="11.5s" begin="6.0s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.3;0.18;0" dur="11.5s" begin="6.0s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Stat chips with staggered entrance -->
   <g text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
-    <g transform="translate(456,298)">
+    <g class="hero__chip c1" transform="translate(456,298)">
       <rect x="-66" y="-14" width="132" height="28" rx="14" fill="#151A2E" stroke="#222742" stroke-width="1"/>
-      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#39E0FF" font-weight="700">149</tspan><tspan fill="#C2C9DD"> tools</tspan></text>
+      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#39E0FF" font-weight="700">198</tspan><tspan fill="#C2C9DD"> tools</tspan></text>
     </g>
-    <g transform="translate(600,298)">
+    <g class="hero__chip c2" transform="translate(600,298)">
       <rect x="-72" y="-14" width="144" height="28" rx="14" fill="#151A2E" stroke="#222742" stroke-width="1"/>
       <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#3FE0A3" font-weight="700">up to 92%</tspan><tspan fill="#C2C9DD"> fewer tokens</tspan></text>
     </g>
-    <g transform="translate(744,298)">
+    <g class="hero__chip c3" transform="translate(744,298)">
       <rect x="-66" y="-14" width="132" height="28" rx="14" fill="#151A2E" stroke="#222742" stroke-width="1"/>
-      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#8B7DFF" font-weight="700">1936</tspan><tspan fill="#C2C9DD"> tests</tspan></text>
+      <text x="0" y="4.5" font-size="12.5" letter-spacing="0.4"><tspan fill="#8B7DFF" font-weight="700">1620</tspan><tspan fill="#C2C9DD"> tests</tspan></text>
     </g>
   </g>
 

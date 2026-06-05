@@ -107,7 +107,7 @@
 
     <circle class="tl_node" cx="1080" cy="200" r="7" fill="#3FE0A3" filter="url(#tl__halo)" style="animation-delay:1.6s"/>
     <text x="1080" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#E8ECF6">v0.1.0 · Beta</text>
-    <text x="1080" y="152" text-anchor="middle" font-size="11" fill="#7E879F">149 tools · 1936 tests</text>
+    <text x="1080" y="152" text-anchor="middle" font-size="11" fill="#7E879F">198 tools · 1620 tests</text>
   </g>
 
   <!-- traveling moon on the flight path -->

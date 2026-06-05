@@ -6,13 +6,6 @@
 
 <br/>
 
-<a href="https://github.com/german-krasnikov/luna-kiss-mcp/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-39E0FF?style=flat-square&labelColor=0E1120"/></a>
-<a href="https://github.com/german-krasnikov/luna-kiss-mcp/releases"><img alt="Status: Beta v0.1.0" src="https://img.shields.io/badge/status-beta%20v0.1.0-8B7DFF?style=flat-square&labelColor=0E1120"/></a>
-<img alt="Python 3.10 to 3.13" src="https://img.shields.io/badge/python-3.10%20%E2%80%93%203.13-3FE0A3?style=flat-square&labelColor=0E1120"/>
-<img alt="Protocol: Chrome DevTools Protocol" src="https://img.shields.io/badge/protocol-CDP-6AB6FF?style=flat-square&labelColor=0E1120"/>
-<img alt="149 tools" src="https://img.shields.io/badge/tools-149-39E0FF?style=flat-square&labelColor=0E1120"/>
-
-<br/>
 <br/>
 
 <strong>An MCP server that lets your AI coding assistant debug Luna playable-ad builds running in Chrome — over the Chrome DevTools Protocol.</strong>
@@ -27,33 +20,23 @@
 
 <div align="center">
 
-<img src="./.github/assets/subtitle.svg" width="760" alt="Luna MCP animated tagline cycling: 149 tools over CDP / Token-minimal by design / Works with Claude Code and Codex / Scene . Physics . Visual . Build" />
+<img src="./.github/assets/subtitle.svg" width="760" alt="Luna MCP animated tagline cycling: 198 tools over CDP / Token-minimal by design / Works with Claude Code and Codex / Scene . Physics . Visual . Build" />
 
 </div>
 
 <div align="center">
 
-<a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-39E0FF?style=for-the-badge&labelColor=05060B"></a>
+<a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/german-krasnikov/luna-kiss-mcp?style=for-the-badge&color=39E0FF&labelColor=05060B"></a>
 <img alt="Python 3.10 to 3.13" src="https://img.shields.io/badge/Python-3.10%E2%80%933.13-8B7DFF?style=for-the-badge&logo=python&logoColor=39E0FF&labelColor=05060B">
-<img alt="Status: Beta v0.1.0" src="https://img.shields.io/badge/Status-Beta%20v0.1.0-FFC24B?style=for-the-badge&labelColor=05060B">
+<img alt="Status: beta v0.1.0" src="https://img.shields.io/badge/Status-Beta%20v0.1.0-FFC24B?style=for-the-badge&labelColor=05060B">
 <br>
-<img alt="1936 tests passing" src="https://img.shields.io/badge/tests-1936%20passing-3FE0A3?style=for-the-badge&labelColor=05060B">
-<img alt="149 tools" src="https://img.shields.io/badge/tools-149-39E0FF?style=for-the-badge&labelColor=05060B">
+<img alt="1620 tests passing" src="https://img.shields.io/badge/tests-1620%20passing-3FE0A3?style=for-the-badge&labelColor=05060B">
+<img alt="198 tools" src="https://img.shields.io/badge/tools-198-39E0FF?style=for-the-badge&labelColor=05060B">
 <img alt="MCP compatible" src="https://img.shields.io/badge/MCP-compatible-8B7DFF?style=for-the-badge&labelColor=05060B">
 <img alt="Chrome DevTools Protocol" src="https://img.shields.io/badge/CDP-Chrome%20DevTools-0FA3C7?style=for-the-badge&logo=googlechrome&logoColor=39E0FF&labelColor=05060B">
 <br>
 <a href="https://github.com/german-krasnikov/luna-kiss-mcp/issues"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-3FE0A3?style=for-the-badge&labelColor=05060B"></a>
 <img alt="Built with Python" src="https://img.shields.io/badge/built%20with-Python-5B4FD6?style=for-the-badge&logo=python&logoColor=39E0FF&labelColor=05060B">
-
-<br><br>
-
-<img alt="topic: luna" src="https://img.shields.io/badge/luna-151A2E?style=flat&labelColor=0E1120">
-<img alt="topic: unity" src="https://img.shields.io/badge/unity-151A2E?style=flat&labelColor=0E1120">
-<img alt="topic: playable" src="https://img.shields.io/badge/playable-151A2E?style=flat&labelColor=0E1120">
-<img alt="topic: devtools" src="https://img.shields.io/badge/devtools-151A2E?style=flat&labelColor=0E1120">
-<img alt="topic: debugging" src="https://img.shields.io/badge/debugging-151A2E?style=flat&labelColor=0E1120">
-<img alt="topic: ai" src="https://img.shields.io/badge/ai-151A2E?style=flat&labelColor=0E1120">
-<img alt="topic: claude" src="https://img.shields.io/badge/claude-151A2E?style=flat&labelColor=0E1120">
 
 </div>
 
@@ -124,7 +107,7 @@ Stacked on top: **plain-text responses** instead of JSON, and a **no-cache** des
 |---|---|
 | **Token minimization is priority #1** | Plain-text over JSON, text summaries over PNGs, one batched round-trip over ten. Savings is the hero metric. |
 | **SOLID / DRY / KISS** | Small, single-purpose modules. One way to do a thing. No clever where clear will do. |
-| **TDD &mdash; Red &middot; Green &middot; Refactor** | **1,936 tests** across **147 files** guard every behavior before it ships. |
+| **TDD &mdash; Red &middot; Green &middot; Refactor** | **1,620 tests** across **147 files** guard every behavior before it ships. |
 | **Files &lt; 200 lines, functions &lt; 50** | If a file outgrows the limit, it splits. Readability is a feature. |
 | **Zero speculative abstraction** | No "for the future." We build what today's debugging session needs &mdash; nothing more. |
 
@@ -330,7 +313,7 @@ You don't memorize tool names. You don't write CDP boilerplate. You speak to you
 </table>
 
 > [!TIP]
-> Every row above is a real exposed tool. The magic isn't a chatbot wrapper — it's **149 tools** (112 AI-exposed + 37 batch-only) routed through a [6-layer composition stack](#the-6-layer-composition-stack) so the assistant gets answers, not raw dumps. Ask in your own words; Luna MCP maps intent → instrument.
+> Every row above is a real exposed tool. The magic isn't a chatbot wrapper — it's **198 tools** (112 AI-exposed + 86 batch-only) routed through a [6-layer composition stack](#the-6-layer-composition-stack) so the assistant gets answers, not raw dumps. Ask in your own words; Luna MCP maps intent → instrument.
 
 <img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />
 
@@ -349,7 +332,7 @@ You don't memorize tool names. You don't write CDP boilerplate. You speak to you
 ```mermaid
 flowchart LR
     AI["🛰 AI Assistant<br/><sub>Claude Code · Codex · Cursor · Windsurf</sub>"]
-    MCP["🌙 Luna MCP<br/><sub>Python · FastMCP · 149 tools</sub>"]
+    MCP["🌙 Luna MCP<br/><sub>Python · FastMCP · 198 tools</sub>"]
     CHROME["🌑 Chrome<br/><sub>Luna build · JS helpers in iframe</sub>"]
 
     AI -- "stdio" --> MCP
@@ -397,7 +380,7 @@ Every tool call descends through six wrappers, outermost first. Each layer earns
 
 <img src="./.github/assets/tool-arsenal.svg" width="100%" alt="Animated tool-arsenal banner — rows of tool names streaming across a deep-space console strip." />
 
-> **149 tools** ride the same orbit: **112 AI-exposed** for your assistant to call directly, plus **37 batch-only** building blocks that the `batch` engine sequences into a single round-trip. Everything speaks **plain text, not JSON**, so every response stays token-light.
+> **198 tools** ride the same orbit: **112 AI-exposed** for your assistant to call directly, plus **86 batch-only** building blocks that the `batch` engine sequences into a single round-trip. Everything speaks **plain text, not JSON**, so every response stays token-light.
 
 ### ⭐ Headline instruments
 
@@ -917,7 +900,7 @@ The server communicates via stdin/stdout using the MCP protocol. No HTTP server,
 ### Development & CI
 
 ```bash
-cd server && pytest tests/ -v            # 1936 tests across 147 test files
+cd server && pytest tests/ -v            # 1620 tests across 147 test files
 cd server && python3 -m luna_mcp.server  # run server manually
 ```
 
@@ -1117,9 +1100,10 @@ python3 -m luna_mcp.cli.ci \
 </p>
 
 <p align="center">
-  <a href="https://github.com/german-krasnikov/luna-kiss-mcp/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-3FE0A3?style=for-the-badge&logoColor=05060B&labelColor=0E1120"></a>
-  <img alt="Status: Beta v0.1.0" src="https://img.shields.io/badge/Status-Beta%20v0.1.0-FFC24B?style=for-the-badge&labelColor=0E1120">
-  <a href="https://github.com/german-krasnikov/luna-kiss-mcp"><img alt="Tests: 1936 passing" src="https://img.shields.io/badge/Tests-1936%20passing-3FE0A3?style=for-the-badge&logoColor=05060B&labelColor=0E1120"></a>
+  <a href="https://github.com/german-krasnikov/luna-kiss-mcp/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/german-krasnikov/luna-kiss-mcp?style=for-the-badge&color=3FE0A3&logoColor=05060B&labelColor=0E1120"></a>
+  <img alt="Status: beta v0.1.0" src="https://img.shields.io/badge/Status-Beta%20v0.1.0-FFC24B?style=for-the-badge&labelColor=0E1120">
+  <a href="https://github.com/german-krasnikov/luna-kiss-mcp"><img alt="Tests: 1620 passing" src="https://img.shields.io/badge/Tests-1620%20passing-3FE0A3?style=for-the-badge&logoColor=05060B&labelColor=0E1120"></a>
+  <a href="https://github.com/german-krasnikov/luna-kiss-mcp"><img alt="Repo size" src="https://img.shields.io/github/repo-size/german-krasnikov/luna-kiss-mcp?style=for-the-badge&color=8B7DFF&logoColor=E8ECF6&labelColor=0E1120"></a>
 </p>
 
 <img src="./.github/assets/divider.svg" width="100%" alt="Section divider" />
@@ -1131,7 +1115,7 @@ python3 -m luna_mcp.cli.ci \
 </div>
 
 <div align="center">
-  <img src="./.github/assets/changelog.svg" width="900" alt="Animated release timeline — five milestones revealed in sequence along a glowing vertical spine as a marker descends: Phase A+B+C (foundation), Waves 1-6 (intelligence), Token Economy (up to 92% saved), Sprints 1-6 (field-ready), and v0.1.0 Beta (149 tools, 1936 tests, ~23,779 LOC)." />
+  <img src="./.github/assets/changelog.svg" width="900" alt="Animated release timeline — five milestones revealed in sequence along a glowing vertical spine as a marker descends: Phase A+B+C (foundation), Waves 1-6 (intelligence), Token Economy (up to 92% saved), Sprints 1-6 (field-ready), and v0.1.0 Beta (198 tools, 1620 tests, ~30,236 LOC)." />
 </div>
 
 <details>
@@ -1175,7 +1159,7 @@ python3 -m luna_mcp.cli.ci \
 <tr>
 <td>🌕 <b>v0.1.0 — Beta</b></td>
 <td><img src="https://img.shields.io/badge/v0.1.0-beta-3FE0A3?style=flat-square&labelColor=0E1120" alt="v0.1.0 beta"/> <img src="https://img.shields.io/badge/license-MIT-7E879F?style=flat-square&labelColor=0E1120" alt="MIT"/></td>
-<td><b>Touchdown.</b> <b>149 tools</b> (112 AI-exposed + 37 batch-only) · <b>1936 tests</b> across 147 files · ~23,779 LOC · Python 3.10–3.13 · <code>luna_helpers.js</code> v1.6.1.</td>
+<td><b>Touchdown.</b> <b>198 tools</b> (112 AI-exposed + 86 batch-only) · <b>1620 tests</b> across 147 files · ~30,236 LOC · Python 3.10–3.13 · <code>luna_helpers.js</code> v1.6.1.</td>
 </tr>
 
 </tbody>

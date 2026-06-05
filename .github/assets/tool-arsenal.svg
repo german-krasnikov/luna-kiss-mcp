@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 260" role="img" aria-labelledby="tarsTitle tarsDesc">
-  <title id="tarsTitle">Luna MCP Tool Arsenal — 149 tools orbiting a lunar core</title>
-  <desc id="tarsDesc">A dark deep-space banner. A lit silver moon sits at the centre with the count 149 tools. Cyan and violet telemetry rings orbit it, labelled with tool categories. A still starfield twinkles behind.</desc>
+  <title id="tarsTitle">Luna MCP Tool Arsenal — 198 tools orbiting a lunar core</title>
+  <desc id="tarsDesc">A dark deep-space banner. A lit silver moon sits at the centre with the count 198 tools. Cyan and violet telemetry rings orbit it, labelled with tool categories. A still starfield twinkles behind.</desc>
 
   <defs>
     <linearGradient id="tars__skyGrad" x1="0" y1="0" x2="0" y2="1">
